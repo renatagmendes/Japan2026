@@ -257,6 +257,7 @@ body { background: var(--bg); color: var(--ink); font-family: 'DM Sans', sans-se
           <option value="all">Todos</option>
           <option value="Fernanda">Fernanda</option>
           <option value="Pika">Pika</option>
+          <option value="Juliana">Juliana Volpini</option>
           <option value="Mari">Mari</option>
           <option value="Multi">Multi-recomendado</option>
         </select>
@@ -291,6 +292,9 @@ const BAIRROS = [
   { id:'asakusa', name:'Asakusa · Ueno', center:[35.7147,139.7966], zoom:15,
     desc:'O bairro mais tradicional. Senso-ji, Nakamise, Fuglen Asakusa. Ritmo mais lento, arquitetura antiga. Completamente diferente do resto de Tokyo.',
     tip:'Senso-ji antes das 9h → Nakamise → Cremia sorvete → Fuglen Asakusa.' },
+  { id:'daikanyama', name:'Daikanyama · Nakameguro', center:[35.6484,139.7021], zoom:16,
+    desc:'O bairro mais local e autêntico da lista segundo a Juliana Volpini — ela comparou com o Brooklyn. Butiques independentes, cafés especiais, a Tsutaya Books (uma das livrarias mais bonitas do mundo) e o Meguro River. Completamente diferente de Shibuya ou Omotesando — ritmo mais lento, menos turistas, mais local.',
+    tip:'Tarde tranquila: Tsutaya Books → Garden House Crafts → Meguro River a pé → Spincoaster Music Bar (Ebisu, 10 min a pé).' },
   { id:'goldengai', name:'Golden Gai · Omoide Yokocho', center:[35.6936,139.7030], zoom:17,
     desc:'O bairro mais raiz de Tokyo segundo o Pika. Golden Gai é um labirinto de vielas em Shinjuku com centenas de bares minúsculos — cada um tem 6 a 8 lugares, um dono diferente, uma vibe própria. Não é um bar, é um bairro inteiro para se perder à noite. Omoide Yokocho fica a 5 min a pé — também raiz, mas mais conhecido e menos autêntico que o Golden Gai. Pika foi claro: se tiver que escolher um, vai de Golden Gai.',
     tip:'Chegar depois das 20h sem plano. Entrar no que parecer interessante. Deixar a noite acontecer.' },
@@ -300,6 +304,8 @@ const BAIRROS = [
 ];
 
 const SHORTLIST = new Set([
+  'Folklore','Ginza Hachigo','Azabu Kumasan','SG Low','Sushi Masashi',
+  'Daikanyama','Tsutaya Books','Zen Punk','Shogun Pizza',
   'Sushi Fukuzuka','Ginza Sand','Wine Stand 88','Harajuku Gyoza-Ro',
   'PST Roppongi','Bar These / THESE','Drink A10','Ginza Tsuquiya',
   'Sushi Takaya','Ramen Tatsunoya Shinjuku','Menchiarashi One','Tatemichiya',
@@ -514,8 +520,8 @@ const PLACES = [
   {b:'shibuya',name:'Shabuzen Shibuya',cat:'rest',lat:35.6610,lng:139.6986,who:'Fernanda',score:3.5,note:'Wagyu shabu. Fernanda: gostoso mas cara de centro de convenções.'},
   {b:'shibuya',name:'Good Good Not Bad',cat:'cafe',lat:35.6605,lng:139.6980,who:'Pika',score:3.2,note:'Coffee stand. 4.3★. Pika indicou.'},
   {b:'shibuya',name:'Ruru Shibuya',cat:'cafe',lat:35.6598,lng:139.6975,who:'Pika',score:3.2,note:'Café com matcha e sobremesas. Pika indicou.'},
-  {b:'shibuya',name:'æ – ash',cat:'cafe',lat:35.6484,lng:139.7021,who:'Pika',score:3.2,note:'4.5★. Daikanyama. Boa comida e ambiente especial.'},
-  {b:'shibuya',name:'Starbucks Reserve Roastery',cat:'cafe',lat:35.6411,lng:139.7020,who:'Pika',score:3.2,note:'4.5★. Nakameguro. Premium Starbucks. Pika indicou.'},
+  {b:'daikanyama',name:'æ – ash',cat:'cafe',lat:35.6484,lng:139.7021,who:'Pika',score:3.2,note:'4.5★. Daikanyama. Boa comida e ambiente especial. Pika indicou.'},
+  
   {b:'shibuya',name:'Shibuya Crossing',cat:'act',lat:35.6595,lng:139.7004,who:'Fernanda',score:3.5,note:'Clássico. Ver de cima também vale.'},
   {b:'shibuya',name:'Miyashita Park',cat:'act',lat:35.6617,lng:139.7027,who:'Fernanda',score:3.8,note:'Fernanda: parte do shopping boa. Terraço ok.'},
   {b:'goldengai',name:'Golden Gai',cat:'bar',lat:35.6936,lng:139.7030,who:'Pika',score:4.8,note:'Pika: bairro mais raiz de Tokyo. Centenas de bares minúsculos — cada um com 6-8 lugares e vibe própria. Não é um bar específico, é um bairro inteiro. Entrar no que parecer interessante.'},
@@ -565,6 +571,28 @@ const PLACES = [
   {b:'outros',name:'Not a Pizza',cat:'rest',lat:35.6895,lng:139.6918,who:'Pika',score:3.2,note:'4.4★. Pizza. Shinjuku. Pika indicou.'},
   {b:'outros',name:'teamLab Planets',cat:'act',lat:35.6479,lng:139.7949,who:'Fernanda',score:3.8,note:'Fernanda adorou mas "não é must, fica longe de tudo." Toyosu.'},
   {b:'outros',name:'Nakano Broadway',cat:'shop',lat:35.7079,lng:139.6658,who:'Fernanda',score:2.8,note:'Fernanda: só vale se quiser comprar relógios vintage.'},
+
+  // JULIANA VOLPINI
+  {b:'ginza',name:'Ginza Hachigo',cat:'rest',lat:35.6713,lng:139.7653,who:'Juliana',score:4.2,note:'Juliana: fila enorme mas o melhor ramen da vida dela — bizarro de bom, preço top. Entusiasmo máximo.'},
+  {b:'ginza',name:'Tachigui Sushi Akira',cat:'rest',lat:35.6720,lng:139.7648,who:'Juliana',score:4.0,note:'Juliana: standing sushi em Ginza. Rápido, autêntico, bom custo-benefício.'},
+  {b:'roppongi',name:'Azabu Kumasan',cat:'rest',lat:35.6570,lng:139.7290,who:'Juliana',score:4.2,note:'Juliana: experiência de wagyu em diferentes maneiras e texturas. Degustação de wagyu — único na lista.'},
+  {b:'roppongi',name:'Folklore',cat:'bar',lat:35.6610,lng:139.7280,who:'Juliana',score:4.2,note:'Juliana: omakase de drinks de sake — cada drink vem com uma coisinha para comer. Conceito autoral único. Reservar.'},
+  {b:'roppongi',name:'SG Low',cat:'bar',lat:35.6608,lng:139.7295,who:'Juliana',score:4.2,note:'Juliana: speakeasy top! Diferente do SG Club. Alta prioridade.'},
+  {b:'roppongi',name:'Shogun Pizza',cat:'rest',lat:35.6565,lng:139.7305,who:'Juliana',score:3.8,note:'Juliana: deliciosa, divina, must come. Terceira opção forte de pizza (junto com PST e RistoPizza).'},
+  {b:'shibuya',name:'Verver',cat:'cafe',lat:35.6490,lng:139.7025,who:'Juliana',score:3.2,note:'Juliana: cappuccino divino. Café em Daikanyama.'},
+  {b:'daikanyama',name:'Daikanyama',cat:'act',lat:35.6484,lng:139.7021,who:'Juliana',score:4.5,note:'Juliana: bairro mais local de Tokyo — tipo um Brooklyn. Boutiques independentes, cafés, ritmo lento. Tarde perfeita.'},
+  {b:'daikanyama',name:'Tsutaya Books',cat:'shop',lat:35.6484,lng:139.7017,who:'Juliana',score:4.0,note:'Juliana indicou. Livraria icônica com itens de decoração, discos e lifestyle. Uma das mais bonitas do mundo.'},
+  {b:'daikanyama',name:'Garden House Crafts',cat:'cafe',lat:35.6479,lng:139.7019,who:'Juliana',score:3.5,note:'Juliana: só tinha japonês — coisas de café da manhã ocidental. Muito local, em Daikanyama.'},
+  {b:'daikanyama',name:'Meguro River',cat:'act',lat:35.6411,lng:139.7006,who:'Juliana',score:3.5,note:'Juliana: bonitinho. Rio com cafés e lojas ao longo da margem. Bom para caminhar no fim de tarde.'},
+  {b:'daikanyama',name:'Starbucks Reserve Roastery',cat:'cafe',lat:35.6411,lng:139.7020,who:'Pika',score:3.2,note:'4.5★. Nakameguro, ao lado do Meguro River. Pika indicou.'},
+  {b:'harajuku',name:'Cat Street',cat:'act',lat:35.6690,lng:139.7060,who:'Juliana',score:4.0,note:'Juliana: tem um matcha top lá. Rua alternativa em Harajuku — boutiques independentes, mais local que Takeshita.'},
+  {b:'harajuku',name:'Matcha Stand (Cat Street)',cat:'cafe',lat:35.6688,lng:139.7058,who:'Juliana',score:3.5,note:'Juliana: matcha stand super cremoso na Cat Street. Nome exato não confirmado — perguntar a ela.'},
+  {b:'harajuku',name:'Zen Punk',cat:'cafe',lat:35.6695,lng:139.7080,who:'Juliana',score:4.0,note:'Juliana: matcha delicioso e panqueca top. Café com foco em matcha e brunch — combina com cafés com comida boa.'},
+  {b:'harajuku',name:'Afuri',cat:'rest',lat:35.6693,lng:139.7075,who:'Juliana',score:3.5,note:'Juliana: muito falado, experiência ótima e rápida sem fila. Ramen estilo yuzu. Várias unidades em Tokyo.'},
+  {b:'outros',name:'Sushi Masashi',cat:'rest',lat:35.6800,lng:139.7500,who:'Juliana',score:4.2,note:'Juliana: o melhor omakase. Acima do Fukuzuka na opinião dela. Investigar endereço e como reservar.'},
+  {b:'outros',name:'Hi-Condition',cat:'cafe',lat:35.6600,lng:139.7100,who:'Juliana',score:3.2,note:'Juliana recomendou. Café de destaque na lista dela.'},
+  {b:'outros',name:'Number Sugar',cat:'cafe',lat:35.6750,lng:139.7200,who:'Juliana',score:3.5,note:'Juliana: docinhos top. Caramelos artesanais numerados com sabores diferentes.'},
+  {b:'outros',name:'Tea Bar Tokyo',cat:'cafe',lat:35.6700,lng:139.7300,who:'Juliana',score:3.2,note:'Juliana: experiência de chá em formato de degustação. Nome exato a confirmar.'},
 ];
 
 const tabsBar = document.getElementById('tabs-bar');

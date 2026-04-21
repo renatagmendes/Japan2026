@@ -45,16 +45,34 @@ body { background: var(--bg); color: var(--ink); font-family: 'DM Sans', sans-se
 .nav-link { font-size: 11px; color: var(--ink3); text-decoration: none; letter-spacing: 0.05em; text-transform: uppercase; border-bottom: 1px solid transparent; padding-bottom: 1px; transition: all 0.15s; }
 .nav-link:hover { color: var(--gold); border-bottom-color: var(--gold-border); }
 
-/* TABS */
+/* TABS / CHIPS */
 .tabs-bar {
   background: var(--white); border-bottom: 1px solid var(--border);
-  padding: 0 1rem; display: flex; gap: 0; flex-shrink: 0;
-  overflow-x: auto; -webkit-overflow-scrolling: touch; height: var(--tabs-h);
+  padding: 0 12px; display: flex; align-items: center; gap: 6px;
+  flex-shrink: 0; overflow-x: auto; -webkit-overflow-scrolling: touch;
+  height: var(--tabs-h); min-height: 44px;
 }
 .tabs-bar::-webkit-scrollbar { height: 0; }
-.tab { font-size: 12px; padding: 0 14px; height: 100%; border: none; background: transparent; color: var(--ink3); cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent; transition: all 0.15s; font-family: 'DM Sans', sans-serif; letter-spacing: 0.02em; }
-.tab:hover { color: var(--ink); }
-.tab.active { color: var(--ink); border-bottom-color: var(--gold); }
+.tab-overview {
+  font-size: 12px; padding: 4px 12px; height: 28px;
+  border: 1.5px solid var(--gold); border-radius: 20px;
+  background: transparent; color: var(--gold);
+  cursor: pointer; white-space: nowrap; flex-shrink: 0;
+  font-family: 'DM Sans', sans-serif; letter-spacing: 0.02em;
+  transition: all 0.15s; display: flex; align-items: center; gap: 4px;
+}
+.tab-overview:hover { background: var(--gold-soft); }
+.tab-divider { width: 1px; height: 18px; background: var(--border); flex-shrink: 0; }
+.tab {
+  font-size: 12px; padding: 4px 12px; height: 28px;
+  border: 1px solid var(--border); border-radius: 20px;
+  background: transparent; color: var(--ink3);
+  cursor: pointer; white-space: nowrap; flex-shrink: 0;
+  font-family: 'DM Sans', sans-serif; letter-spacing: 0.02em;
+  transition: all 0.15s; display: flex; align-items: center; gap: 4px;
+}
+.tab:hover { color: var(--ink); border-color: var(--ink3); }
+.tab.active { background: var(--ink); color: var(--white); border-color: var(--ink); }
 
 /* ── DESKTOP LAYOUT ── */
 .main { display: flex; flex: 1; overflow: hidden; }
@@ -63,6 +81,21 @@ body { background: var(--bg); color: var(--ink); font-family: 'DM Sans', sans-se
 .sidebar::-webkit-scrollbar-thumb { background: var(--border); }
 .map-wrap { flex: 1; position: relative; }
 #map { width: 100%; height: 100%; }
+
+/* SIDEBAR COLLAPSE */
+.sidebar-toggle {
+  position: absolute; top: 50%; right: -14px;
+  transform: translateY(-50%);
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--white); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; z-index: 10; font-size: 12px;
+  box-shadow: 0 2px 6px rgba(28,25,22,0.1);
+  transition: all 0.15s; color: var(--ink2);
+}
+.sidebar-toggle:hover { border-color: var(--gold); color: var(--gold); }
+.sidebar.collapsed-desktop { width: 0 !important; overflow: hidden; border-right: none; }
+.map-wrap { flex: 1; position: relative; transition: all 0.25s; }
 
 /* FILTERS */
 .filters { padding: 10px 12px; border-bottom: 1px solid var(--border); background: var(--white); display: flex; gap: 8px; }
@@ -136,6 +169,57 @@ body { background: var(--bg); color: var(--ink); font-family: 'DM Sans', sans-se
 .popup-link:hover { background: var(--gold); color: var(--white); }
 .leaflet-control-zoom a { background: var(--white) !important; border-color: var(--border) !important; color: var(--ink) !important; }
 
+/* SEARCH BAR */
+.search-wrap {
+  padding: 10px 12px;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.search-input {
+  width: 100%;
+  font-size: 13px;
+  padding: 7px 32px 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  transition: border-color 0.15s;
+  outline: none;
+}
+.search-input:focus { border-color: var(--gold); }
+.search-input::placeholder { color: var(--ink3); }
+.search-clear {
+  position: absolute;
+  right: 20px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px; color: var(--ink3);
+  cursor: pointer; background: none;
+  border: none; padding: 0; line-height: 1;
+  display: none;
+}
+.search-clear.visible { display: block; }
+
+/* SEARCH RESULTS */
+.search-results {
+  display: none;
+  padding: 0 8px 80px;
+}
+.search-results.active { display: block; }
+.search-hit {
+  padding: 9px 11px; border-radius: 8px; margin-bottom: 5px;
+  cursor: pointer; border: 1px solid var(--border);
+  background: var(--white); transition: all 0.15s;
+}
+.search-hit:hover { border-color: var(--gold-border); }
+.sh-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 2px; }
+.sh-name { font-size: 13px; font-weight: 500; color: var(--ink); flex: 1; }
+.sh-bairro { font-size: 10px; color: var(--ink3); }
+.sh-meta { display: flex; align-items: center; gap: 4px; }
+.search-empty { font-size: 13px; color: var(--ink3); text-align: center; padding: 24px 0; }
+mark { background: var(--gold-soft); color: var(--ink); border-radius: 2px; padding: 0 1px; }
+
 /* ── MOBILE LAYOUT ── */
 @media (max-width: 700px) {
   :root { --sidebar: 100%; }
@@ -204,11 +288,15 @@ body { background: var(--bg); color: var(--ink); font-family: 'DM Sans', sans-se
   </div>
 </div>
 
-<div class="tabs-bar" id="tabs-bar"></div>
+<div class="tabs-bar" id="tabs-bar">
+  <button class="tab-overview" onclick="showOverview()">🗾 Tokyo</button>
+  <div class="tab-divider"></div>
+</div>
 
 <div class="main">
-  <div class="sidebar" id="sidebar">
+  <div class="sidebar" id="sidebar" style="position:relative">
     <div class="sheet-handle" id="sheet-handle" onclick="toggleSheet()"></div>
+    <button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()" title="Minimizar">‹</button>
     <div class="filters" id="filters">
       <div class="filter-wrap">
         <div class="filter-label">Categoria</div>
@@ -233,9 +321,14 @@ body { background: var(--bg); color: var(--ink); font-family: 'DM Sans', sans-se
         </select>
       </div>
     </div>
+    <div class="search-wrap">
+      <input class="search-input" id="search-input" type="text" placeholder="Buscar um lugar..." oninput="handleSearch(this.value)" />
+      <button class="search-clear" id="search-clear" onclick="clearSearch()">✕</button>
+    </div>
     <div class="bairro-info" id="bairro-info"></div>
     <div class="results-count" id="results-count"></div>
     <div class="places-list" id="places-list"></div>
+    <div class="search-results" id="search-results"></div>
   </div>
   <div class="map-wrap">
     <div id="map"></div>
@@ -245,31 +338,31 @@ body { background: var(--bg); color: var(--ink); font-family: 'DM Sans', sans-se
 
 <script>
 const BAIRROS = [
-  { id:'ginza', name:'Ginza · Tsukiji · Marunouchi', center:[35.6717,139.7664], zoom:15,
+  { id:'ginza', name:'Ginza · Tsukiji · Marunouchi', emoji:'✦', center:[35.6717,139.7664], zoom:15,
     desc:'Seu hub principal — o Peninsula fica aqui. Ginza é a Quinta Avenida de Tokyo. Tsukiji a 10 min a pé. Marunouchi colada, com as avenidas largas que a Fernanda adorou.',
     tip:'Roteiro: Tsukiji de manhã cedo → Ginza almoço e tarde → Marunouchi fim de tarde.' },
-  { id:'roppongi', name:'Roppongi · Azabu · Minato', center:[35.6628,139.7314], zoom:15,
+  { id:'roppongi', name:'Roppongi · Azabu · Minato', emoji:'🍕', center:[35.6628,139.7314], zoom:15,
     desc:'Cluster de bares e gastronomia da noite. PST, Bar These, Azabudai Hills — tudo concentrado aqui. teamLab Borderless também fica no Azabudai.',
     tip:'Azabudai Hills no final da tarde → PST para jantar → Bar These.' },
-  { id:'shibuya', name:'Shibuya · Ebisu · Daikanyama', center:[35.6590,139.7005], zoom:15,
+  { id:'shibuya', name:'Shibuya · Ebisu · Daikanyama', emoji:'🍸', center:[35.6590,139.7005], zoom:15,
     desc:'Cluster de bares de alta qualidade recomendados pelo Pika. The SG Club, The Bellwood, Spincoaster — todos aqui. Daikanyama é cool e arborizado.',
     tip:'Daikanyama café (æ–ash) → Drink A10 → SG Club ou Bellwood.' },
-  { id:'shinjuku', name:'Shinjuku', center:[35.6934,139.7031], zoom:15,
+  { id:'shinjuku', name:'Shinjuku', emoji:'🎋', center:[35.6934,139.7031], zoom:15,
     desc:'O bairro mais importante para noite autêntica. Golden Gai — estrela do Pika — fica aqui. Bar Benfiddich também. Melhor ramen da lista.',
     tip:'Ramen no almoço → Shinjuku Gyoen → Golden Gai à noite → Benfiddich.' },
-  { id:'harajuku', name:'Harajuku · Omotesando · Aoyama', center:[35.6702,139.7026], zoom:15,
+  { id:'harajuku', name:'Harajuku · Omotesando · Aoyama', emoji:'🛍', center:[35.6702,139.7026], zoom:15,
     desc:'Passeio e compras no seu estilo. Omotesando tem design e flagships. Gyoza-Ro é must do. Koffee Mameya Kakeru e Higuma Doughnuts ficam aqui.',
     tip:'Meiji Jingu manhã → Gyoza-Ro almoço → Omotesando → Koffee Mameya (reservar).' },
-  { id:'asakusa', name:'Asakusa · Ueno', center:[35.7147,139.7966], zoom:15,
+  { id:'asakusa', name:'Asakusa · Ueno', emoji:'⛩', center:[35.7147,139.7966], zoom:15,
     desc:'O bairro mais tradicional. Senso-ji, Nakamise, Fuglen Asakusa. Ritmo mais lento, arquitetura antiga. Completamente diferente do resto de Tokyo.',
     tip:'Senso-ji antes das 9h → Nakamise → Cremia sorvete → Fuglen Asakusa.' },
-  { id:'daikanyama', name:'Daikanyama · Nakameguro', center:[35.6484,139.7021], zoom:16,
+  { id:'daikanyama', name:'Daikanyama · Nakameguro', emoji:'📚', center:[35.6484,139.7021], zoom:16,
     desc:'O bairro mais local e autêntico da lista segundo a Juliana Volpini — ela comparou com o Brooklyn. Butiques independentes, cafés especiais, a Tsutaya Books (uma das livrarias mais bonitas do mundo) e o Meguro River. Completamente diferente de Shibuya ou Omotesando — ritmo mais lento, menos turistas, mais local.',
     tip:'Tarde tranquila: Tsutaya Books → Garden House Crafts → Meguro River a pé → Spincoaster Music Bar (Ebisu, 10 min a pé).' },
-  { id:'goldengai', name:'Golden Gai · Omoide Yokocho', center:[35.6936,139.7030], zoom:17,
+  { id:'goldengai', name:'Golden Gai · Omoide Yokocho', emoji:'🏮', center:[35.6936,139.7030], zoom:17,
     desc:'O bairro mais raiz de Tokyo segundo o Pika. Golden Gai é um labirinto de vielas em Shinjuku com centenas de bares minúsculos — cada um tem 6 a 8 lugares, um dono diferente, uma vibe própria. Não é um bar, é um bairro inteiro para se perder à noite. Omoide Yokocho fica a 5 min a pé — também raiz, mas mais conhecido e menos autêntico que o Golden Gai. Pika foi claro: se tiver que escolher um, vai de Golden Gai.',
     tip:'Chegar depois das 20h sem plano. Entrar no que parecer interessante. Deixar a noite acontecer.' },
-  { id:'outros', name:'Outros Bairros', center:[35.6762,139.6503], zoom:13,
+  { id:'outros', name:'Outros Bairros', emoji:'＋', center:[35.6762,139.6503], zoom:13,
     desc:'Lugares especiais fora dos clusters principais: Maen (omakase + sake, Pika foi pessoalmente), Tomigaya, Nakameguro, Shimokitazawa.',
     tip:'Encaixar no dia mais próximo geograficamente.' },
 ];
@@ -436,134 +529,134 @@ function switchBairro(id) {
 }
 
 const PLACES = [
-  {b:'ginza',name:'Maguroya Kurogin',cat:'rest',lat:35.6650,lng:139.7697,who:'Pika',score:4.8,note:'Um dos melhores atuns da vida do Pika. Dentro do Tsukiji. Chegar cedo.'},
-  {b:'ginza',name:'Wine Stand 88',cat:'rest',lat:35.6655,lng:139.7701,who:'Fernanda',score:4.5,note:'Wagyu sando com mostarda e molho secreto + sake. Destaque do Tsukiji segundo Fernanda.'},
-  {b:'ginza',name:'Sushizanmai Okuno In',cat:'rest',lat:35.6658,lng:139.7695,who:'Pika',score:4.2,note:'Pika confirmou: muito bom, abre 24h. No Tsukiji.'},
+  {b:'ginza',name:'Maguroya Kurogin',cat:'rest',lat:35.6650,lng:139.7697,who:'Pika',score:4.8,note:'Um dos melhores atuns da vida do Pika. Dentro do Tsukiji. Chegar cedo.',url:'https://tabelog.com/en/tokyo/A1314/A131401/13149846/'},
+  {b:'ginza',name:'Wine Stand 88',cat:'rest',lat:35.6655,lng:139.7701,who:'Fernanda',score:4.5,note:'Wagyu sando com mostarda e molho secreto + sake. Destaque do Tsukiji segundo Fernanda.',url:'https://tabelog.com/en/tokyo/A1314/A131401/13181481/'},
+  {b:'ginza',name:'Sushizanmai Okuno In',cat:'rest',lat:35.6658,lng:139.7695,who:'Pika',score:4.2,note:'Confirmou: muito bom, abre 24h. No Tsukiji.',url:'https://maps.app.goo.gl/baCZQ35ko2nCWNJy7?g_st=iw'},
   {b:'ginza',name:'Mukai',cat:'rest',lat:35.6653,lng:139.7700,who:'Pika',score:3.2,note:'Frutos do mar. Pika indicou. Tsukiji.'},
-  {b:'ginza',name:'Tsukiji Outer Market',cat:'act',lat:35.6654,lng:139.7706,who:'Fernanda',score:4.2,note:'Fernanda: chegar antes das 9h para pegar o movimento. Pika também recomendou.'},
-  {b:'ginza',name:'Ginza Sand',cat:'rest',lat:35.6721,lng:139.7652,who:'Multi',score:4.8,note:'O wagyu katsu sando mais famoso de Tokyo. Multi-recomendado.'},
-  {b:'ginza',name:'Sushi Fukuzuka',cat:'rest',lat:35.6940,lng:139.7419,who:'Fernanda+Mari',score:4.5,note:'5★ da Fernanda. Omakase ~¥38.000/pp. Reserva obrigatória. Avisar sobre crustáceo.'},
-  {b:'ginza',name:'Ginza Tsuquiya',cat:'rest',lat:35.6717,lng:139.7655,who:'Fernanda+Pika',score:4.5,note:'B1 do Ginza Six. Ramen barato e muito bom. Fernanda adorou. Pika confirmou.'},
-  {b:'ginza',name:'Sushi Takaya',cat:'rest',lat:35.6724,lng:139.7648,who:'Fernanda',score:4.0,note:'Set lunch omakase. Excelente custo-benefício. Fernanda descobriu pelo Google Maps.'},
+  {b:'ginza',name:'Tsukiji Outer Market',cat:'act',lat:35.6654,lng:139.7706,who:'Fernanda',score:4.2,note:'Chegar antes das 9h para pegar o movimento. Pika também recomendou.'},
+  {b:'ginza',name:'Ginza Sand',cat:'rest',lat:35.6721,lng:139.7652,who:'Multi',score:4.8,note:'O wagyu katsu sando mais famoso de Tokyo. Multi-recomendado.',url:'https://tabelog.com/en/tokyo/A1301/A130101/13264523/'},
+  {b:'ginza',name:'Sushi Fukuzuka',cat:'rest',lat:35.6940,lng:139.7419,who:'Fernanda+Mari',score:4.5,note:'5★ da Fernanda. Omakase ~¥38.000/pp. Reserva obrigatória. Avisar sobre crustáceo.',url:'https://www.opentable.com/r/sushi-fukuzuka-shinjuku-ku'},
+  {b:'ginza',name:'Ginza Tsuquiya',cat:'rest',lat:35.6717,lng:139.7655,who:'Fernanda+Pika',score:4.5,note:'B1 do Ginza Six. Ramen barato e muito bom. Fernanda adorou.',url:'https://tabelog.com/en/tokyo/A1301/A130101/13223777/'},
+  {b:'ginza',name:'Sushi Takaya',cat:'rest',lat:35.6724,lng:139.7648,who:'Fernanda',score:4.0,note:'Set lunch omakase. Excelente custo-benefício. Fernanda descobriu pelo Google Maps.',url:'https://tabelog.com/en/tokyo/A1301/A130101/13246614/'},
   {b:'ginza',name:'Tempura Kondo',cat:'rest',lat:35.6722,lng:139.7641,who:'Multi',score:3.5,note:'Michelin. Para quem ama tempura. Ginza. Multi-recomendado.'},
   {b:'ginza',name:'Sushi Ginza Onodera',cat:'rest',lat:35.6713,lng:139.7647,who:'Mari',score:3.5,note:'Omakase em Ginza. Mari indicou.'},
-  {b:'ginza',name:'Seamon Ginza',cat:'rest',lat:35.6715,lng:139.7660,who:'Fernanda',score:3.5,note:'Fernanda almoçou: fresco mas não se derreteu.'},
+  {b:'ginza',name:'Seamon Ginza',cat:'rest',lat:35.6715,lng:139.7660,who:'Fernanda',score:3.5,note:'Almoçou: fresco mas não se derreteu.'},
   {b:'ginza',name:'Ritei Sanbun',cat:'rest',lat:35.6836,lng:139.7740,who:'Pika',score:3.2,note:'Japonês tradicional. Nihonbashi. Pika indicou.'},
   {b:'ginza',name:'Symbol Bar',cat:'bar',lat:35.6720,lng:139.7643,who:'Fernanda',score:3.2,note:'Barzinho de frente para a rua. Fernanda gostou.'},
-  {b:'ginza',name:'INC Cocktails',cat:'bar',lat:35.6718,lng:139.7638,who:'Pika',score:4.0,note:'4.1★. Cocktail bar. Pika indicou. Ginza.'},
-  {b:'ginza',name:'Fauvism Cocktail & Spirits',cat:'bar',lat:35.6722,lng:139.7632,who:'Pika',score:4.0,note:'4.4★. Whisky japonês em destaque. Pika indicou.'},
+  {b:'ginza',name:'INC Cocktails',cat:'bar',lat:35.6718,lng:139.7638,who:'Pika',score:4.0,note:'Cocktail bar. Pika indicou. Ginza.'},
+  {b:'ginza',name:'Fauvism Cocktail & Spirits',cat:'bar',lat:35.6722,lng:139.7632,who:'Pika',score:4.0,note:'Whisky japonês em destaque. Pika indicou.'},
   {b:'ginza',name:'Gold Bar at EDITION',cat:'bar',lat:35.6690,lng:139.7720,who:'Pika',score:3.5,note:'Bar do EDITION Hotel. Pika indicou.'},
   {b:'ginza',name:'Virtu Bar (Four Seasons)',cat:'bar',lat:35.6840,lng:139.7644,who:'Multi',score:3.2,note:'Bar do Four Seasons Marunouchi. Multi-recomendado.'},
-  {b:'ginza',name:'X Coffee Ginza',cat:'cafe',lat:35.6719,lng:139.7656,who:'Pika',score:3.8,note:'Pika recomendou pessoalmente. 4.7★.'},
-  {b:'ginza',name:'ROAR Coffee Ginza',cat:'cafe',lat:35.6716,lng:139.7648,who:'Pika',score:2.8,note:'4.5★. Pika indicou.'},
-  {b:'ginza',name:'Bongen Coffee Ginza',cat:'cafe',lat:35.6714,lng:139.7645,who:'Pika',score:2.8,note:'4.4★. Pika indicou.'},
-  {b:'ginza',name:'Glitch Coffee Ginza',cat:'cafe',lat:35.6712,lng:139.7643,who:'Pika',score:2.8,note:'4.3★. Pika indicou.'},
-  {b:'ginza',name:'Shiseido Ginza',cat:'shop',lat:35.6728,lng:139.7641,who:'Fernanda',score:3.8,note:'Fernanda fez skin consultation. Boa experiência.'},
+  {b:'ginza',name:'X Coffee Ginza',cat:'cafe',lat:35.6719,lng:139.7656,who:'Pika',score:3.8,note:'Recomendou pessoalmente. 4.7★.'},
+  {b:'ginza',name:'ROAR Coffee Ginza',cat:'cafe',lat:35.6716,lng:139.7648,who:'Pika',score:2.8,note:''},
+  {b:'ginza',name:'Bongen Coffee Ginza',cat:'cafe',lat:35.6714,lng:139.7645,who:'Pika',score:2.8,note:''},
+  {b:'ginza',name:'Glitch Coffee Ginza',cat:'cafe',lat:35.6712,lng:139.7643,who:'Pika',score:2.8,note:''},
+  {b:'ginza',name:'Shiseido Ginza',cat:'shop',lat:35.6728,lng:139.7641,who:'Fernanda',score:3.8,note:'Fez skin consultation. Boa experiência.'},
   {b:'ginza',name:'Ginza Six',cat:'shop',lat:35.6715,lng:139.7653,who:'Fernanda',score:4.8,note:'B1 de comida maravilhoso: Langue de Chat, mochi, morangos brancos, Ben\'s Cookies, mercado orgânico.'},
-  {b:'ginza',name:'Co & Co / Brand Off',cat:'shop',lat:35.6724,lng:139.7649,who:'Fernanda',score:3.2,note:'Fernanda viu Birkins e Kellys. Luxo segunda mão.'},
+  {b:'ginza',name:'Co & Co / Brand Off',cat:'shop',lat:35.6724,lng:139.7649,who:'Fernanda',score:3.2,note:'Viu Birkins e Kellys. Luxo segunda mão.'},
   {b:'ginza',name:'Hermès Ginza',cat:'shop',lat:35.6726,lng:139.7647,who:'Fernanda',score:2.8,note:'Flagship de 6 andares. Fernanda só browsed.'},
-  {b:'ginza',name:'Imperial Palace Gardens',cat:'act',lat:35.6852,lng:139.7528,who:'Fernanda',score:3.8,note:'Fernanda: lindo e arborizado. Bom para caminhar.'},
-  {b:'ginza',name:'Marunouchi-Naka-Dori',cat:'act',lat:35.6812,lng:139.7649,who:'Fernanda',score:4.5,note:'Fernanda adorou o vibe. Avenida larga e moderna perto do palácio.'},
+  {b:'ginza',name:'Imperial Palace Gardens',cat:'act',lat:35.6852,lng:139.7528,who:'Fernanda',score:3.8,note:'Lindo e arborizado. Bom para caminhar.'},
+  {b:'ginza',name:'Marunouchi-Naka-Dori',cat:'act',lat:35.6812,lng:139.7649,who:'Fernanda',score:4.5,note:'Adorou o vibe. Avenida larga e moderna perto do palácio.'},
   {b:'ginza',name:'Tsukijigawa Ginza Park',cat:'act',lat:35.6695,lng:139.7720,who:'Pika',score:3.5,note:'Parque pequeno em Ginza. Pika indicou.'},
-  {b:'roppongi',name:'PST Roppongi',cat:'rest',lat:35.6606,lng:139.7298,who:'Fernanda+Pika',score:4.8,note:'Fernanda adorou. Pika: "melhor pizza do mundo." Reservar com antecedência.'},
-  {b:'roppongi',name:'Bar These / THESE',cat:'bar',lat:35.6608,lng:139.7292,who:'Fernanda+Pika',score:4.5,note:'Você escolhe a fruta, eles montam o drink. Fernanda adorou. Pika indicou. Reservar.'},
+  {b:'roppongi',name:'PST Roppongi',cat:'rest',lat:35.6606,lng:139.7298,who:'Fernanda+Pika',score:4.8,note:'Adorou. Pika: "melhor pizza do mundo." Reservar com antecedência.',url:'https://www.instagram.com/pst_roppongi/'},
+  {b:'roppongi',name:'Bar These / THESE',cat:'bar',lat:35.6608,lng:139.7292,who:'Fernanda+Pika',score:4.5,note:'Você escolhe a fruta, eles montam o drink. Fernanda adorou. Pika indicou. Reservar.',url:'https://www.instagram.com/these_roppongi/'},
   {b:'roppongi',name:'Savoy Pizza',cat:'rest',lat:35.6554,lng:139.7359,who:'Multi',score:4.2,note:'Multi-recomendado. Alternativa ao PST.'},
   {b:'roppongi',name:'Pizza 4Ps',cat:'rest',lat:35.6558,lng:139.7308,who:'Fernanda',score:3.5,note:'Dentro do Azabudai Hills. Estava lotado quando Fernanda foi.'},
   {b:'roppongi',name:'RistoPizza by Napoli sta ca',cat:'rest',lat:35.6556,lng:139.7312,who:'Pika',score:3.2,note:'Pizza. Azabudai Hills. Pika indicou.'},
-  {b:'roppongi',name:'Tsujihan Tokyo Midtown',cat:'rest',lat:35.6656,lng:139.7314,who:'Pika',score:4.2,note:'Kaizen-don. Pika recomendou. Unidade do Midtown tem menos fila.'},
+  {b:'roppongi',name:'Tsujihan Tokyo Midtown',cat:'rest',lat:35.6656,lng:139.7314,who:'Pika',score:4.2,note:'Kaizen-don. Pika recomendou. Unidade do Midtown tem menos fila.',url:'https://tabelog.com/en/tokyo/A1307/A130701/13204060/'},
   {b:'roppongi',name:'Ibuki Udon Tokyo Midtown',cat:'rest',lat:35.6658,lng:139.7316,who:'Pika',score:3.2,note:'Udon dentro do Tokyo Midtown.'},
   {b:'roppongi',name:'Butagumi',cat:'rest',lat:35.6603,lng:139.7280,who:'Pika',score:3.2,note:'Tonkatsu tradicional. 4.4★. Nishi-Azabu. Pika indicou.'},
   {b:'roppongi',name:'Sushi Onikai',cat:'rest',lat:35.6669,lng:139.7250,who:'Pika',score:3.8,note:'Omakase ¥10.000+. Pika indicou.'},
-  {b:'roppongi',name:'Azabudai Hills',cat:'shop',lat:35.6558,lng:139.7308,who:'Fernanda',score:4.5,note:'Fernanda adorou apesar de confuso. Boa arquitetura e cena gastronômica.'},
-  {b:'roppongi',name:'21_21 Design Sight',cat:'act',lat:35.6642,lng:139.7313,who:'Fernanda',score:3.5,note:'Fernanda: prédio lindo por fora. Não entrou.'},
-  {b:'roppongi',name:'teamLab Borderless',cat:'act',lat:35.6560,lng:139.7310,who:'Pika',score:3.0,note:'Pika: "experiência de luz legal." Azabudai Hills. Diferente do Planets.'},
+  {b:'roppongi',name:'Azabudai Hills',cat:'shop',lat:35.6558,lng:139.7308,who:'Fernanda',score:4.5,note:'Adorou apesar de confuso. Boa arquitetura e cena gastronômica.'},
+  {b:'roppongi',name:'21_21 Design Sight',cat:'act',lat:35.6642,lng:139.7313,who:'Fernanda',score:3.5,note:'Prédio lindo por fora. Não entrou.'},
+  {b:'roppongi',name:'teamLab Borderless',cat:'act',lat:35.6560,lng:139.7310,who:'Pika',score:3.0,note:'"experiência de luz legal." Azabudai Hills. Diferente do Planets.'},
   {b:'roppongi',name:'Tokyo Tower',cat:'act',lat:35.6586,lng:139.7454,who:'Fernanda',score:3.5,note:'Bonito de fora. Zojo-ji ao lado vale visitar.'},
   {b:'roppongi',name:'Zojo-Ji Temple',cat:'act',lat:35.6581,lng:139.7494,who:'Fernanda',score:3.8,note:'Vale parar quando perto da Tokyo Tower.'},
-  {b:'roppongi',name:'Hamarikyu Garden',cat:'act',lat:35.6611,lng:139.7627,who:'Fernanda',score:3.5,note:'Fernanda: lindo mas um pouco afastado.'},
-  {b:'shibuya',name:'Drink A10',cat:'bar',lat:35.6591,lng:139.7036,who:'Fernanda',score:3.8,note:'Fernanda adorou. Speakeasy. Chegar antes das 20h.'},
-  {b:'shibuya',name:'The SG Club',cat:'bar',lat:35.6601,lng:139.7013,who:'Pika',score:4.0,note:'Pika: precisa reservar. Dois andares — Guzzle (casual) e Sip (formal).'},
-  {b:'shibuya',name:'The Bellwood',cat:'bar',lat:35.6603,lng:139.7009,who:'Pika',score:4.0,note:'4.6★. Pika confirmou. Reservar. Ambiente intimista.'},
-  {b:'shibuya',name:'Spincoaster Music Bar',cat:'bar',lat:35.6470,lng:139.7128,who:'Pika',score:4.0,note:'4.9★ — mais bem avaliado dos bares do Pika. Bar de vinil. Walk-in.'},
+  {b:'roppongi',name:'Hamarikyu Garden',cat:'act',lat:35.6611,lng:139.7627,who:'Fernanda',score:3.5,note:'Lindo mas um pouco afastado.'},
+  {b:'shibuya',name:'Drink A10',cat:'bar',lat:35.6591,lng:139.7036,who:'Fernanda',score:3.8,note:'Adorou. Speakeasy. Chegar antes das 20h.',url:'https://www.instagram.com/drink_a10/'},
+  {b:'shibuya',name:'The SG Club',cat:'bar',lat:35.6601,lng:139.7013,who:'Pika',score:4.0,note:'Precisa reservar. Dois andares — Guzzle (casual) e Sip (formal).',url:'https://sg-management.jp/en/'},
+  {b:'shibuya',name:'The Bellwood',cat:'bar',lat:35.6603,lng:139.7009,who:'Pika',score:4.0,note:'Reservar. Ambiente intimista.',url:'https://www.tablecheck.com/en/shops/thebellwood/reserve'},
+  {b:'shibuya',name:'Spincoaster Music Bar',cat:'bar',lat:35.6470,lng:139.7128,who:'Pika',score:4.0,note:'4.9★ — mais bem avaliado dos bares do Pika. Bar de vinil. Walk-in.',url:'https://www.spincoaster.com/musicbar'},
   {b:'shibuya',name:'Hi-Fi Listening Bar',cat:'bar',lat:35.6596,lng:139.6988,who:'Multi',score:3.8,note:'Bar de listening. Multi-recomendado.'},
-  {b:'shibuya',name:'Maguro-to-Shari Shibuya',cat:'rest',lat:35.6612,lng:139.7037,who:'Pika',score:3.2,note:'4.4★. Tuna donburi. Pika indicou.'},
+  {b:'shibuya',name:'Maguro-to-Shari Shibuya',cat:'rest',lat:35.6612,lng:139.7037,who:'Pika',score:3.2,note:'Tuna donburi. Pika indicou.'},
   {b:'shibuya',name:'Shirubee Shibuya',cat:'rest',lat:35.6598,lng:139.7029,who:'Pika',score:4.0,note:'Izakaya 3.8★. Pika indicou.'},
   {b:'shibuya',name:'Uogashi Nihon-Ichi Shibuya',cat:'rest',lat:35.6580,lng:139.7016,who:'Pika',score:3.2,note:'Sushi em pé. 4.5★. Pika indicou.'},
   {b:'shibuya',name:'Shabuzen Shibuya',cat:'rest',lat:35.6610,lng:139.6986,who:'Fernanda',score:3.5,note:'Wagyu shabu. Fernanda: gostoso mas cara de centro de convenções.'},
   {b:'shibuya',name:'Good Good Not Bad',cat:'cafe',lat:35.6605,lng:139.6980,who:'Pika',score:3.2,note:'Coffee stand. 4.3★. Pika indicou.'},
   {b:'shibuya',name:'Ruru Shibuya',cat:'cafe',lat:35.6598,lng:139.6975,who:'Pika',score:3.2,note:'Café com matcha e sobremesas. Pika indicou.'},
-  {b:'daikanyama',name:'æ – ash',cat:'cafe',lat:35.6484,lng:139.7021,who:'Pika',score:3.2,note:'4.5★. Daikanyama. Boa comida e ambiente especial. Pika indicou.'},
+  {b:'daikanyama',name:'æ – ash',cat:'cafe',lat:35.6484,lng:139.7021,who:'Pika',score:3.2,note:'Daikanyama. Boa comida e ambiente especial. Pika indicou.'},
   
   {b:'shibuya',name:'Shibuya Crossing',cat:'act',lat:35.6595,lng:139.7004,who:'Fernanda',score:3.5,note:'Clássico. Ver de cima também vale.'},
-  {b:'shibuya',name:'Miyashita Park',cat:'act',lat:35.6617,lng:139.7027,who:'Fernanda',score:3.8,note:'Fernanda: parte do shopping boa. Terraço ok.'},
-  {b:'goldengai',name:'Golden Gai',cat:'bar',lat:35.6936,lng:139.7030,who:'Pika',score:4.8,note:'Pika: bairro mais raiz de Tokyo. Centenas de bares minúsculos — cada um com 6-8 lugares e vibe própria. Não é um bar específico, é um bairro inteiro. Entrar no que parecer interessante.'},
+  {b:'shibuya',name:'Miyashita Park',cat:'act',lat:35.6617,lng:139.7027,who:'Fernanda',score:3.8,note:'Parte do shopping boa. Terraço ok.'},
+  {b:'goldengai',name:'Golden Gai',cat:'bar',lat:35.6936,lng:139.7030,who:'Pika',score:4.8,note:'Bairro mais raiz de Tokyo. Centenas de bares minúsculos — cada um com 6-8 lugares e vibe própria. Não é um bar específico, é um bairro inteiro. Entrar no que parecer interessante.',url:'https://www.shinjuku-goldengai.com/'},
   {b:'shinjuku',name:'Bar Benfiddich',cat:'bar',lat:35.6917,lng:139.6992,who:'Pika+Multi',score:3.8,note:'#18 World\'s 50 Best Bars. Sem menu — bartender cria na hora. Reservar em 20 nov.'},
-  {b:'shinjuku',name:'Tatemichiya',cat:'rest',lat:35.6921,lng:139.7025,who:'Pika',score:4.0,note:'4.7★. Izakaya. Pika indicou. Reservar via Tabelog.'},
+  {b:'shinjuku',name:'Tatemichiya',cat:'rest',lat:35.6921,lng:139.7025,who:'Pika',score:4.0,note:'Izakaya. Pika indicou. Reservar via Tabelog.'},
   {b:'shinjuku',name:'Terumae',cat:'rest',lat:35.6925,lng:139.7019,who:'Pika',score:4.0,note:'Izakaya 4.6★. Pika indicou.'},
   {b:'shinjuku',name:'Toribaka Ichidai',cat:'rest',lat:35.6918,lng:139.7020,who:'Pika',score:3.2,note:'Yakitori. Pika indicou.'},
   {b:'shinjuku',name:'Menchiarashi One',cat:'rest',lat:35.6909,lng:139.6988,who:'Multi',score:3.5,note:'Ramen carbonara. Multi-recomendado. Tem fila.'},
   {b:'shinjuku',name:'Ramen Tatsunoya Shinjuku',cat:'rest',lat:35.6912,lng:139.6984,who:'Pika',score:3.2,note:'4.4★ com 4.163 reviews. Pika indicou.'},
   {b:'shinjuku',name:'Ramen Jiro',cat:'rest',lat:35.6908,lng:139.6980,who:'Pika',score:4.0,note:'Cult ramen. Pika indicou.'},
   {b:'shinjuku',name:'Taishu Sakaba',cat:'rest',lat:35.6915,lng:139.6976,who:'Pika',score:3.2,note:'Ramen + Horumon-yaki. 4.8★. Pika indicou.'},
-  {b:'shinjuku',name:'175° Deno Ramen',cat:'rest',lat:35.6920,lng:139.6972,who:'Fernanda',score:3.0,note:'Fernanda não recomenda. Chris e Leka odiaram.'},
-  {b:'goldengai',name:'Omoide Yokocho',cat:'bar',lat:35.6904,lng:139.7005,who:'Pika+Fernanda',score:3.5,note:'Pika: "menos raiz que Golden Gai." Fernanda não entrou — achou fumaçento e lotado. Para quem quer a experiência de viela sem o Golden Gai. Yakitori e espetinhos.'},
+  {b:'shinjuku',name:'175° Deno Ramen',cat:'rest',lat:35.6920,lng:139.6972,who:'Fernanda',score:3.0,note:'Não recomenda. Chris e Leka odiaram.'},
+  {b:'goldengai',name:'Omoide Yokocho',cat:'bar',lat:35.6904,lng:139.7005,who:'Pika+Fernanda',score:3.5,note:'"menos raiz que Golden Gai." Fernanda não entrou — achou fumaçento e lotado. Para quem quer a experiência de viela sem o Golden Gai. Yakitori e espetinhos.'},
   {b:'shinjuku',name:'The Pizza Bar On 38th',cat:'rest',lat:35.6896,lng:139.6920,who:'Pika',score:3.2,note:'¥10.000+. 38° andar do Park Hyatt. Pika indicou.'},
   {b:'shinjuku',name:'Perfect Beer Kitchen',cat:'bar',lat:35.6934,lng:139.6900,who:'Pika',score:3.5,note:'Cerveja e frango. 4.6★. Nishi-Shinjuku. Pika indicou.'},
   {b:'shinjuku',name:'Blue Bottle Coffee Shinjuku',cat:'cafe',lat:35.6927,lng:139.7006,who:'Pika',score:2.8,note:'Rede internacional. Pika indicou.'},
-  {b:'shinjuku',name:'Shinjuku Gyoen',cat:'act',lat:35.6851,lng:139.7100,who:'Fernanda',score:3.8,note:'Fernanda: lindíssimo. Bom para foliagem de dezembro.'},
-  {b:'shinjuku',name:'Giant 3D Cat Billboard',cat:'act',lat:35.6930,lng:139.7012,who:'Fernanda',score:3.0,note:'Fernanda: não valeu a pena. Não parecia muito 3D.'},
-  {b:'harajuku',name:'Harajuku Gyoza-Ro',cat:'rest',lat:35.6697,lng:139.7097,who:'Fernanda',score:4.8,note:'Fernanda: maravilhoso. Pedir um de cada: vapor, frito e com shissô.'},
-  {b:'harajuku',name:'Koffee Mameya Kakeru',cat:'cafe',lat:35.6681,lng:139.7088,who:'Pika',score:3.5,note:'Pika: precisa reservar. Degustação sit-down. Muito diferente do Mameya original.'},
-  {b:'harajuku',name:'Koffee Mameya',cat:'cafe',lat:35.6682,lng:139.7090,who:'Fernanda',score:2.5,note:'Fernanda esperou 40 min. Ritual de café para ver e sair — não fica dentro.'},
+  {b:'shinjuku',name:'Shinjuku Gyoen',cat:'act',lat:35.6851,lng:139.7100,who:'Fernanda',score:3.8,note:'Lindíssimo. Bom para foliagem de dezembro.'},
+  {b:'shinjuku',name:'Giant 3D Cat Billboard',cat:'act',lat:35.6930,lng:139.7012,who:'Fernanda',score:3.0,note:'Não valeu a pena. Não parecia muito 3D.'},
+  {b:'harajuku',name:'Harajuku Gyoza-Ro',cat:'rest',lat:35.6697,lng:139.7097,who:'Fernanda',score:4.8,note:'Maravilhoso. Pedir um de cada: vapor, frito e com shissô.',url:'https://www.gyozaro.com/'},
+  {b:'harajuku',name:'Koffee Mameya Kakeru',cat:'cafe',lat:35.6681,lng:139.7088,who:'Pika',score:3.5,note:'Precisa reservar. Degustação sit-down. Muito diferente do Mameya original.'},
+  {b:'harajuku',name:'Koffee Mameya',cat:'cafe',lat:35.6682,lng:139.7090,who:'Fernanda',score:2.5,note:'Esperou 40 min. Ritual de café para ver e sair — não fica dentro.'},
   {b:'harajuku',name:'Higuma Doughnuts × Coffee Wrights',cat:'cafe',lat:35.6671,lng:139.7123,who:'Pika',score:3.2,note:'Donuts artesanais + café. Omotesando.'},
-  {b:'harajuku',name:'Coffee & Donuts',cat:'cafe',lat:35.6675,lng:139.7118,who:'Fernanda',score:3.2,note:'Fernanda passou por aqui. Donuts, sorvete, café.'},
+  {b:'harajuku',name:'Coffee & Donuts',cat:'cafe',lat:35.6675,lng:139.7118,who:'Fernanda',score:3.2,note:'Passou por aqui. Donuts, sorvete, café.'},
   {b:'harajuku',name:'Neel Jingumae',cat:'cafe',lat:35.6684,lng:139.7081,who:'Pika',score:3.2,note:'Café em Harajuku. Pika indicou.'},
   {b:'harajuku',name:'Totti Candy Factory',cat:'cafe',lat:35.6699,lng:139.7068,who:'Fernanda',score:3.2,note:'Algodão doce na Takeshita. Diversão novelty.'},
-  {b:'harajuku',name:'Cosme',cat:'shop',lat:35.6672,lng:139.7125,who:'Fernanda',score:3.8,note:'Fernanda: Sephora japonês. Ir sabendo o que quer.'},
+  {b:'harajuku',name:'Cosme',cat:'shop',lat:35.6672,lng:139.7125,who:'Fernanda',score:3.8,note:'Sephora japonês. Ir sabendo o que quer.'},
   {b:'harajuku',name:'Ralph Lauren Omotesando',cat:'shop',lat:35.6669,lng:139.7128,who:'Fernanda',score:2.8,note:'Flagship elegante. Fernanda só passou.'},
-  {b:'harajuku',name:'Omotesando Hills',cat:'shop',lat:35.6666,lng:139.7131,who:'Fernanda',score:2.8,note:'Fernanda: o menos legal dos shoppings visitados.'},
-  {b:'harajuku',name:'Meiji Jingu Shrine',cat:'act',lat:35.6764,lng:139.6994,who:'Fernanda+Mari',score:3.5,note:'Fernanda: lindo. Tem um café/restaurante dentro.'},
+  {b:'harajuku',name:'Omotesando Hills',cat:'shop',lat:35.6666,lng:139.7131,who:'Fernanda',score:2.8,note:'O menos legal dos shoppings visitados.'},
+  {b:'harajuku',name:'Meiji Jingu Shrine',cat:'act',lat:35.6764,lng:139.6994,who:'Fernanda+Mari',score:3.5,note:'Lindo. Tem um café/restaurante dentro.'},
   {b:'harajuku',name:'Yoyogi Park',cat:'act',lat:35.6707,lng:139.6947,who:'Fernanda',score:3.8,note:'Bom para correr. Fernanda viu cerejeiras aqui.'},
   {b:'harajuku',name:'Harajuku Mame-Shiba Café',cat:'act',lat:35.6700,lng:139.7072,who:'Fernanda',score:2.5,note:'Café de Shibas na Takeshita. Fernanda visitou.'},
-  {b:'asakusa',name:'Cremia (Nakamise)',cat:'cafe',lat:35.7148,lng:139.7967,who:'Fernanda',score:4.0,note:'Fernanda: maravilhoso. Sorvete soft serve na Nakamise.'},
-  {b:'asakusa',name:'Fuglen Asakusa',cat:'cafe',lat:35.7145,lng:139.7955,who:'Pika',score:3.2,note:'4.1★. Tem waffles e comida. Pika indicou.'},
+  {b:'asakusa',name:'Cremia (Nakamise)',cat:'cafe',lat:35.7148,lng:139.7967,who:'Fernanda',score:4.0,note:'Maravilhoso. Sorvete soft serve na Nakamise.'},
+  {b:'asakusa',name:'Fuglen Asakusa',cat:'cafe',lat:35.7145,lng:139.7955,who:'Pika',score:3.2,note:'Tem waffles e comida. Pika indicou.'},
   {b:'asakusa',name:'Chacha Futatsume',cat:'cafe',lat:35.7140,lng:139.7960,who:'Pika',score:3.2,note:'Matcha soft serve em cone. Pika indicou.'},
   {b:'asakusa',name:'Senso-ji Temple',cat:'act',lat:35.7147,lng:139.7967,who:'Fernanda+Mari',score:3.5,note:'Ir antes das 9h para evitar multidões. Clássico de Asakusa.'},
   {b:'asakusa',name:'Nakamise Street',cat:'shop',lat:35.7142,lng:139.7972,who:'Fernanda',score:3.5,note:'Rua turística. Vale para snacks e souvenirs locais.'},
-  {b:'asakusa',name:'Tokyo Skytree',cat:'act',lat:35.7101,lng:139.8107,who:'Fernanda+Mari',score:3.5,note:'Fernanda: só vale se estiver muito claro e der para ver o Fuji.'},
-  {b:'asakusa',name:'Tokyo National Museum',cat:'act',lat:35.7189,lng:139.7764,who:'Fernanda',score:3.5,note:'Fernanda não achou que valeu. Ueno muito lotado.'},
-  {b:'outros',name:'Maen',cat:'rest',lat:35.6690,lng:139.7060,who:'Pika',score:4.5,note:'Pika foi pessoalmente: omakase + sake pairing, sem frescura, adoram o Brasil. Reservar.'},
+  {b:'asakusa',name:'Tokyo Skytree',cat:'act',lat:35.7101,lng:139.8107,who:'Fernanda+Mari',score:3.5,note:'Só vale se estiver muito claro e der para ver o Fuji.'},
+  {b:'asakusa',name:'Tokyo National Museum',cat:'act',lat:35.7189,lng:139.7764,who:'Fernanda',score:3.5,note:'Não achou que valeu. Ueno muito lotado.'},
+  {b:'outros',name:'Maen',cat:'rest',lat:35.6690,lng:139.7060,who:'Pika',score:4.5,note:'Foi pessoalmente: omakase + sake pairing, sem frescura, adoram o Brasil. Reservar.',url:'https://tabelog.com/en/tokyo/A1316/A131601/13282516/'},
   {b:'outros',name:'Fuglen Tokyo',cat:'cafe',lat:35.6712,lng:139.6878,who:'Pika',score:3.2,note:'Tomigaya. Vira bar à noite. Pika indicou.'},
   {b:'outros',name:'ROAR Coffeehouse & Roastery',cat:'cafe',lat:35.6620,lng:139.6680,who:'Pika',score:2.8,note:'Shimokitazawa. 4.6★. Pika indicou.'},
   {b:'outros',name:'Bear Pond Espresso',cat:'cafe',lat:35.6618,lng:139.6674,who:'Pika',score:2.8,note:'Shimokitazawa. Specialty espresso. Pika indicou.'},
   {b:'outros',name:'Glitch Coffee & Roasters',cat:'cafe',lat:35.6958,lng:139.7588,who:'Pika',score:2.8,note:'Jinbocho. Specialty roastery. Pika indicou.'},
   {b:'outros',name:'Streamer Coffee Akasaka',cat:'cafe',lat:35.6739,lng:139.7358,who:'Pika',score:3.2,note:'Akasaka. Tem outras unidades. Pika indicou.'},
   {b:'outros',name:'Homemade Noodles Billiken',cat:'rest',lat:35.7265,lng:139.7113,who:'Pika',score:3.2,note:'Ramen. Ikebukuro. 4.1★. Pika indicou.'},
-  {b:'outros',name:'Seafood Restaurant Seagen',cat:'rest',lat:35.7395,lng:139.7978,who:'Pika',score:3.2,note:'4.7★. Frutos do mar. Pika indicou.'},
-  {b:'outros',name:'Not a Pizza',cat:'rest',lat:35.6895,lng:139.6918,who:'Pika',score:3.2,note:'4.4★. Pizza. Shinjuku. Pika indicou.'},
-  {b:'outros',name:'teamLab Planets',cat:'act',lat:35.6479,lng:139.7949,who:'Fernanda',score:3.8,note:'Fernanda adorou mas "não é must, fica longe de tudo." Toyosu.'},
-  {b:'outros',name:'Nakano Broadway',cat:'shop',lat:35.7079,lng:139.6658,who:'Fernanda',score:2.8,note:'Fernanda: só vale se quiser comprar relógios vintage.'},
+  {b:'outros',name:'Seafood Restaurant Seagen',cat:'rest',lat:35.7395,lng:139.7978,who:'Pika',score:3.2,note:'Frutos do mar. Pika indicou.'},
+  {b:'outros',name:'Not a Pizza',cat:'rest',lat:35.6895,lng:139.6918,who:'Pika',score:3.2,note:'Pizza. Shinjuku. Pika indicou.'},
+  {b:'outros',name:'teamLab Planets',cat:'act',lat:35.6479,lng:139.7949,who:'Fernanda',score:3.8,note:'Adorou mas "não é must, fica longe de tudo." Toyosu.'},
+  {b:'outros',name:'Nakano Broadway',cat:'shop',lat:35.7079,lng:139.6658,who:'Fernanda',score:2.8,note:'Só vale se quiser comprar relógios vintage.'},
 
   // JULIANA VOLPINI
-  {b:'ginza',name:'Ginza Hachigo',cat:'rest',lat:35.6697,lng:139.7698,who:'Juliana',score:4.2,note:'Juliana: melhor ramen da vida dela — bizarro de bom. Michelin Bib Gourmand. Chef com 30 anos de cozinha francesa. Caldo tipo consommé. Só 6 lugares. Chegar cedo.',url:'https://katsumoto-japan.com/en/ginza_hachigou.html'},
-  {b:'ginza',name:'Tachigui Sushi Akira',cat:'rest',lat:35.6720,lng:139.7648,who:'Juliana',score:4.0,note:'Juliana: standing sushi em Ginza. Rápido, autêntico, bom custo-benefício.'},
-  {b:'roppongi',name:'Azabu Kumasan',cat:'rest',lat:35.6570,lng:139.7290,who:'Juliana',score:4.2,note:'Juliana: experiência de wagyu em diferentes maneiras e texturas. Degustação de wagyu — único na lista.'},
-  {b:'ginza',name:'Folklore',cat:'bar',lat:35.6736,lng:139.7590,who:'Juliana',score:4.2,note:'Juliana: omakase de drinks de sake/shochu — cada drink vem com petisco japonês. Fica em Hibiya OKUROJI, entre Ginza e Tokio Station. Michelin group. Reservar.',url:'https://autoreserve.com/en/restaurants/FQET57aBJKua7qNskU1Z'},
-  {b:'roppongi',name:'SG Low',cat:'bar',lat:35.6608,lng:139.7295,who:'Juliana',score:4.2,note:'Juliana: speakeasy top! Diferente do SG Club. Alta prioridade.'},
-  {b:'roppongi',name:'Shogun Pizza',cat:'rest',lat:35.6565,lng:139.7305,who:'Juliana',score:3.8,note:'Juliana: deliciosa, divina, must come. Terceira opção forte de pizza (junto com PST e RistoPizza).'},
-  {b:'shibuya',name:'Verver',cat:'cafe',lat:35.6490,lng:139.7025,who:'Juliana',score:3.2,note:'Juliana: cappuccino divino. Café em Daikanyama.'},
-  {b:'daikanyama',name:'Daikanyama',cat:'act',lat:35.6484,lng:139.7021,who:'Juliana',score:4.5,note:'Juliana: bairro mais local de Tokyo — tipo um Brooklyn. Boutiques independentes, cafés, ritmo lento. Tarde perfeita.'},
-  {b:'daikanyama',name:'Tsutaya Books',cat:'shop',lat:35.6484,lng:139.7017,who:'Juliana',score:4.0,note:'Juliana indicou. Livraria icônica com itens de decoração, discos e lifestyle. Uma das mais bonitas do mundo.'},
-  {b:'daikanyama',name:'Garden House Crafts',cat:'cafe',lat:35.6479,lng:139.7019,who:'Juliana',score:3.5,note:'Juliana: só tinha japonês — coisas de café da manhã ocidental. Muito local, em Daikanyama.'},
-  {b:'daikanyama',name:'Meguro River',cat:'act',lat:35.6411,lng:139.7006,who:'Juliana',score:3.5,note:'Juliana: bonitinho. Rio com cafés e lojas ao longo da margem. Bom para caminhar no fim de tarde.'},
-  {b:'daikanyama',name:'Starbucks Reserve Roastery',cat:'cafe',lat:35.6411,lng:139.7020,who:'Pika',score:3.2,note:'4.5★. Nakameguro, ao lado do Meguro River. Pika indicou.'},
-  {b:'harajuku',name:'Cat Street',cat:'act',lat:35.6690,lng:139.7060,who:'Juliana',score:4.0,note:'Juliana: tem um matcha top lá. Rua alternativa em Harajuku — boutiques independentes, mais local que Takeshita.'},
-  {b:'harajuku',name:'Matcha Stand (Cat Street)',cat:'cafe',lat:35.6688,lng:139.7058,who:'Juliana',score:3.5,note:'Juliana: matcha stand super cremoso na Cat Street. Nome exato não confirmado — perguntar a ela.'},
-  {b:'harajuku',name:'Zen Punk',cat:'cafe',lat:35.6695,lng:139.7080,who:'Juliana',score:4.0,note:'Juliana: matcha delicioso e panqueca top. Café com foco em matcha e brunch — combina com cafés com comida boa.'},
-  {b:'harajuku',name:'Afuri',cat:'rest',lat:35.6693,lng:139.7075,who:'Juliana',score:3.5,note:'Juliana: muito falado, experiência ótima e rápida sem fila. Ramen estilo yuzu. Várias unidades em Tokyo.'},
-  {b:'outros',name:'Sushi Masashi',cat:'rest',lat:35.6800,lng:139.7500,who:'Juliana',score:4.2,note:'Juliana: o melhor omakase. Acima do Fukuzuka na opinião dela. Investigar endereço e como reservar.'},
-  {b:'outros',name:'Hi-Condition',cat:'cafe',lat:35.6600,lng:139.7100,who:'Juliana',score:3.2,note:'Juliana recomendou. Café de destaque na lista dela.'},
-  {b:'outros',name:'Number Sugar',cat:'cafe',lat:35.6750,lng:139.7200,who:'Juliana',score:3.5,note:'Juliana: docinhos top. Caramelos artesanais numerados com sabores diferentes.'},
-  {b:'outros',name:'Tea Bar Tokyo',cat:'cafe',lat:35.6700,lng:139.7300,who:'Juliana',score:3.2,note:'Juliana: experiência de chá em formato de degustação. Nome exato a confirmar.'},
+  {b:'ginza',name:'Ginza Hachigo',cat:'rest',lat:35.6697,lng:139.7698,who:'Juliana',score:4.2,note:'Melhor ramen da vida dela — bizarro de bom. Michelin Bib Gourmand. Chef com 30 anos de cozinha francesa. Caldo tipo consommé. Só 6 lugares. Chegar cedo.',url:'https://katsumoto-japan.com/en/ginza_hachigou.html'},
+  {b:'ginza',name:'Tachigui Sushi Akira',cat:'rest',lat:35.6720,lng:139.7648,who:'Juliana',score:4.0,note:'Standing sushi em Ginza. Rápido, autêntico, bom custo-benefício.'},
+  {b:'roppongi',name:'Azabu Kumasan',cat:'rest',lat:35.6570,lng:139.7290,who:'Juliana',score:4.2,note:'Experiência de wagyu em diferentes maneiras e texturas. Degustação de wagyu — único na lista.',url:'https://tabelog.com/en/tokyo/A1307/A130703/13286594/'},
+  {b:'ginza',name:'Folklore',cat:'bar',lat:35.6736,lng:139.7590,who:'Juliana',score:4.2,note:'Omakase de drinks de sake/shochu — cada drink vem com petisco japonês. Fica em Hibiya OKUROJI, entre Ginza e Tokio Station. Michelin group. Reservar.',url:'https://autoreserve.com/en/restaurants/FQET57aBJKua7qNskU1Z'},
+  {b:'roppongi',name:'SG Low',cat:'bar',lat:35.6608,lng:139.7295,who:'Juliana',score:4.2,note:'Speakeasy top! Diferente do SG Club. Alta prioridade.',url:'https://sg-management.jp/en/'},
+  {b:'roppongi',name:'Shogun Pizza',cat:'rest',lat:35.6565,lng:139.7305,who:'Juliana',score:3.8,note:'Deliciosa, divina, must come. Terceira opção forte de pizza (junto com PST e RistoPizza).',url:'https://www.instagram.com/shogun_pizza/'},
+  {b:'shibuya',name:'Verver',cat:'cafe',lat:35.6490,lng:139.7025,who:'Juliana',score:3.2,note:'Cappuccino divino. Café em Daikanyama.'},
+  {b:'daikanyama',name:'Daikanyama',cat:'act',lat:35.6484,lng:139.7021,who:'Juliana',score:4.5,note:'Bairro mais local de Tokyo — tipo um Brooklyn. Boutiques independentes, cafés, ritmo lento. Tarde perfeita.',url:'https://store.tsite.jp/daikanyama/english/'},
+  {b:'daikanyama',name:'Tsutaya Books',cat:'shop',lat:35.6484,lng:139.7017,who:'Juliana',score:4.0,note:'Indicou. Livraria icônica com itens de decoração, discos e lifestyle. Uma das mais bonitas do mundo.',url:'https://store.tsite.jp/daikanyama/english/'},
+  {b:'daikanyama',name:'Garden House Crafts',cat:'cafe',lat:35.6479,lng:139.7019,who:'Juliana',score:3.5,note:'Só tinha japonês — coisas de café da manhã ocidental. Muito local, em Daikanyama.'},
+  {b:'daikanyama',name:'Meguro River',cat:'act',lat:35.6411,lng:139.7006,who:'Juliana',score:3.5,note:'Bonitinho. Rio com cafés e lojas ao longo da margem. Bom para caminhar no fim de tarde.'},
+  {b:'daikanyama',name:'Starbucks Reserve Roastery',cat:'cafe',lat:35.6411,lng:139.7020,who:'Pika',score:3.2,note:'Nakameguro, ao lado do Meguro River. Pika indicou.'},
+  {b:'harajuku',name:'Cat Street',cat:'act',lat:35.6690,lng:139.7060,who:'Juliana',score:4.0,note:'Tem um matcha top lá. Rua alternativa em Harajuku — boutiques independentes, mais local que Takeshita.'},
+  {b:'harajuku',name:'Matcha Stand (Cat Street)',cat:'cafe',lat:35.6688,lng:139.7058,who:'Juliana',score:3.5,note:'Matcha stand super cremoso na Cat Street. Nome exato não confirmado — perguntar a ela.'},
+  {b:'harajuku',name:'Zen Punk',cat:'cafe',lat:35.6695,lng:139.7080,who:'Juliana',score:4.0,note:'Matcha delicioso e panqueca top. Café com foco em matcha e brunch — combina com cafés com comida boa.',url:'https://www.instagram.com/zenpunk_coffee/'},
+  {b:'harajuku',name:'Afuri',cat:'rest',lat:35.6693,lng:139.7075,who:'Juliana',score:3.5,note:'Muito falado, experiência ótima e rápida sem fila. Ramen estilo yuzu. Várias unidades em Tokyo.'},
+  {b:'outros',name:'Sushi Masashi',cat:'rest',lat:35.6800,lng:139.7500,who:'Juliana',score:4.2,note:'O melhor omakase. Acima do Fukuzuka na opinião dela. Investigar endereço e como reservar.',url:'https://tabelog.com/en/tokyo/A1301/A130101/13254937/'},
+  {b:'outros',name:'Hi-Condition',cat:'cafe',lat:35.6600,lng:139.7100,who:'Juliana',score:3.2,note:'Recomendou. Café de destaque na lista dela.'},
+  {b:'outros',name:'Number Sugar',cat:'cafe',lat:35.6750,lng:139.7200,who:'Juliana',score:3.5,note:'Docinhos top. Caramelos artesanais numerados com sabores diferentes.'},
+  {b:'outros',name:'Tea Bar Tokyo',cat:'cafe',lat:35.6700,lng:139.7300,who:'Juliana',score:3.2,note:'Experiência de chá em formato de degustação. Nome exato a confirmar.'},
 ];
 
 // OVERVIEW: zoom out to see all bairros with colored polygons
@@ -650,15 +743,115 @@ const tooltipStyle = document.createElement('style');
 tooltipStyle.textContent = '.bairro-label { background: rgba(255,255,255,0.9); border: none; box-shadow: none; font-family: "DM Sans", sans-serif; font-size: 11px; color: #1C1916; font-weight: 500; padding: 2px 6px; border-radius: 4px; }';
 document.head.appendChild(tooltipStyle);
 
+// ── SEARCH ──────────────────────────────────────────────────────────────────
+function handleSearch(query) {
+  const clearBtn = document.getElementById('search-clear');
+  const searchResults = document.getElementById('search-results');
+  const placesList = document.getElementById('places-list');
+  const bairroInfo = document.getElementById('bairro-info');
+  const resultsCount = document.getElementById('results-count');
+
+  query = query.trim();
+  clearBtn.classList.toggle('visible', query.length > 0);
+
+  if (!query) {
+    searchResults.classList.remove('active');
+    placesList.style.display = '';
+    bairroInfo.style.display = '';
+    resultsCount.style.display = '';
+    return;
+  }
+
+  // Hide normal content, show search results
+  placesList.style.display = 'none';
+  bairroInfo.style.display = 'none';
+  resultsCount.style.display = 'none';
+  searchResults.classList.add('active');
+
+  const q = query.toLowerCase();
+  const hits = PLACES.filter(p =>
+    p.name.toLowerCase().includes(q) ||
+    (p.note && p.note.toLowerCase().includes(q)) ||
+    (p.who && p.who.toLowerCase().includes(q))
+  ).sort((a, b) => {
+    // Exact name match first
+    const aName = a.name.toLowerCase().startsWith(q) ? 0 : 1;
+    const bName = b.name.toLowerCase().startsWith(q) ? 0 : 1;
+    return aName - bName || b.score - a.score;
+  });
+
+  if (!hits.length) {
+    searchResults.innerHTML = `<div class="search-empty">Nenhum resultado para "${query}"</div>`;
+    return;
+  }
+
+  const bairroNames = {
+    ginza:'Ginza · Tsukiji', roppongi:'Roppongi · Azabu', shibuya:'Shibuya · Ebisu',
+    shinjuku:'Shinjuku', harajuku:'Harajuku · Omotesando', asakusa:'Asakusa',
+    goldengai:'Golden Gai', daikanyama:'Daikanyama', outros:'Outros'
+  };
+
+  function highlight(text) {
+    if (!text) return '';
+    const re = new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')', 'gi');
+    return text.replace(re, '<mark>$1</mark>');
+  }
+
+  searchResults.innerHTML = `<div style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink3);padding:8px 4px 5px">${hits.length} resultado${hits.length!==1?'s':''}</div>` +
+    hits.map(p => {
+      const sl = SHORTLIST.has(p.name);
+      const cat = p.cat;
+      return `<div class="search-hit" onclick="goToPlace('${p.b}','${p.name.replace(/'/g,"\'")}',${p.lat},${p.lng})">
+        <div class="sh-row">
+          <div class="sh-name">${highlight(p.name)}${sl?' <span style="color:var(--gold);font-size:10px">★</span>':''}</div>
+          <div class="sh-meta">
+            <span class="pc-score">${p.score}</span>
+            <span class="cat-pill pill-${cat}">${CAT_LABELS[cat]||cat}</span>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div class="sh-bairro">${p.who} · ${bairroNames[p.b]||p.b}</div>
+        </div>
+      </div>`;
+    }).join('');
+}
+
+function goToPlace(bairroId, name, lat, lng) {
+  clearSearch();
+  if (currentBairro !== bairroId) switchBairro(bairroId);
+  else { renderMap(bairroId); renderSidebar(bairroId); }
+  setTimeout(() => focusPlace(name, lat, lng), 150);
+}
+
+function clearSearch() {
+  const input = document.getElementById('search-input');
+  input.value = '';
+  handleSearch('');
+}
+
+// Build tabs as chips
 const tabsBar = document.getElementById('tabs-bar');
 BAIRROS.forEach((b, i) => {
   const btn = document.createElement('button');
   btn.className = 'tab' + (i===0?' active':'');
   btn.dataset.id = b.id;
-  btn.textContent = b.name.split('·')[0].trim();
+  btn.innerHTML = `<span>${b.emoji}</span> ${b.name.split('·')[0].trim()}`;
   btn.onclick = () => switchBairro(b.id);
   tabsBar.appendChild(btn);
 });
+
+// Sidebar collapse (desktop)
+let sidebarOpen = true;
+function toggleSidebar() {
+  sidebarOpen = !sidebarOpen;
+  const sidebar = document.getElementById('sidebar');
+  const toggle = document.getElementById('sidebar-toggle');
+  sidebar.classList.toggle('collapsed-desktop', !sidebarOpen);
+  toggle.textContent = sidebarOpen ? '‹' : '›';
+  toggle.style.right = sidebarOpen ? '-14px' : '-28px';
+  // Nudge map to re-render
+  setTimeout(() => map.invalidateSize(), 300);
+}
 
 initMap();
 renderMap('ginza');

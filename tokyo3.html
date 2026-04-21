@@ -25,6 +25,8 @@
   --shop: #1E4A6B;
   --act: #2A5C3A;
   --sidebar: 320px;
+  --header-h: 52px;
+  --tabs-h: 40px;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; overflow: hidden; }
@@ -32,205 +34,172 @@ body { background: var(--bg); color: var(--ink); font-family: 'DM Sans', sans-se
 
 /* HEADER */
 .header {
-  background: var(--white);
-  border-bottom: 1px solid var(--border);
-  padding: 0 1.5rem;
-  display: flex; align-items: center; justify-content: space-between;
-  height: 52px; flex-shrink: 0;
+  background: var(--white); border-bottom: 1px solid var(--border);
+  padding: 0 1.25rem; display: flex; align-items: center;
+  justify-content: space-between; height: var(--header-h); flex-shrink: 0;
 }
-.header-brand {
-  display: flex; align-items: baseline; gap: 8px;
-}
-.header-cat { font-size: 16px; }
-.header-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 18px; font-weight: 400; color: var(--ink);
-  letter-spacing: 0.01em;
-}
+.header-title { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 400; color: var(--ink); }
 .header-title em { font-style: italic; color: var(--gold); }
-.header-sub {
-  font-size: 11px; color: var(--ink3);
-  letter-spacing: 0.04em;
-}
-.nav-link {
-  font-size: 11px; color: var(--ink3); text-decoration: none;
-  letter-spacing: 0.05em; text-transform: uppercase;
-  border-bottom: 1px solid transparent; padding-bottom: 1px;
-  transition: all 0.15s;
-}
+.header-right { display: flex; align-items: center; gap: 12px; }
+.header-sub { font-size: 11px; color: var(--ink3); letter-spacing: 0.04em; }
+.nav-link { font-size: 11px; color: var(--ink3); text-decoration: none; letter-spacing: 0.05em; text-transform: uppercase; border-bottom: 1px solid transparent; padding-bottom: 1px; transition: all 0.15s; }
 .nav-link:hover { color: var(--gold); border-bottom-color: var(--gold-border); }
 
 /* TABS */
 .tabs-bar {
-  background: var(--white);
-  border-bottom: 1px solid var(--border);
-  padding: 0 1.5rem;
-  display: flex; gap: 0; flex-shrink: 0;
-  overflow-x: auto; -webkit-overflow-scrolling: touch;
+  background: var(--white); border-bottom: 1px solid var(--border);
+  padding: 0 1rem; display: flex; gap: 0; flex-shrink: 0;
+  overflow-x: auto; -webkit-overflow-scrolling: touch; height: var(--tabs-h);
 }
 .tabs-bar::-webkit-scrollbar { height: 0; }
-.tab {
-  font-size: 12px; padding: 12px 16px;
-  border: none; background: transparent;
-  color: var(--ink3); cursor: pointer; white-space: nowrap;
-  border-bottom: 2px solid transparent;
-  transition: all 0.15s; font-family: 'DM Sans', sans-serif;
-  letter-spacing: 0.02em;
-}
+.tab { font-size: 12px; padding: 0 14px; height: 100%; border: none; background: transparent; color: var(--ink3); cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent; transition: all 0.15s; font-family: 'DM Sans', sans-serif; letter-spacing: 0.02em; }
 .tab:hover { color: var(--ink); }
 .tab.active { color: var(--ink); border-bottom-color: var(--gold); }
 
-/* MAIN */
+/* ── DESKTOP LAYOUT ── */
 .main { display: flex; flex: 1; overflow: hidden; }
-.sidebar {
-  width: var(--sidebar); flex-shrink: 0;
-  overflow-y: auto; background: var(--bg);
-  border-right: 1px solid var(--border);
-  display: flex; flex-direction: column;
-}
+.sidebar { width: var(--sidebar); flex-shrink: 0; overflow-y: auto; background: var(--bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
 .sidebar::-webkit-scrollbar { width: 3px; }
 .sidebar::-webkit-scrollbar-thumb { background: var(--border); }
 .map-wrap { flex: 1; position: relative; }
 #map { width: 100%; height: 100%; }
 
 /* FILTERS */
-.filters {
-  padding: 12px 14px;
-  border-bottom: 1px solid var(--border);
-  background: var(--white);
-  display: flex; gap: 8px; flex-wrap: wrap;
-}
-.filter-wrap { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 110px; }
+.filters { padding: 10px 12px; border-bottom: 1px solid var(--border); background: var(--white); display: flex; gap: 8px; }
+.filter-wrap { display: flex; flex-direction: column; gap: 3px; flex: 1; }
 .filter-label { font-size: 10px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink3); }
-.filter-select {
-  font-size: 12px; padding: 6px 10px;
-  border: 1px solid var(--border); border-radius: 6px;
-  background: var(--bg); color: var(--ink);
-  cursor: pointer; font-family: 'DM Sans', sans-serif;
-  appearance: none; -webkit-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239E978F' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 8px center;
-  padding-right: 26px;
-  transition: border-color 0.15s;
-}
+.filter-select { font-size: 12px; padding: 5px 24px 5px 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--ink); cursor: pointer; font-family: 'DM Sans', sans-serif; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239E978F' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 7px center; transition: border-color 0.15s; }
 .filter-select:focus { outline: none; border-color: var(--gold); }
-.filter-select:hover { border-color: var(--gold-border); }
 
 /* BAIRRO INFO */
-.bairro-info {
-  padding: 14px 14px 12px;
-  border-bottom: 1px solid var(--border);
-  background: var(--white);
-}
-.bairro-name {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 19px; font-weight: 400; color: var(--ink);
-  margin-bottom: 5px; line-height: 1.2;
-}
-.bairro-desc { font-size: 12px; color: var(--ink2); line-height: 1.6; margin-bottom: 8px; }
-.bairro-tip {
-  font-size: 11px; color: var(--gold);
-  padding: 6px 10px;
-  background: var(--gold-soft);
-  border-radius: 6px;
-  border-left: 2px solid var(--gold-border);
-  line-height: 1.5;
-}
+.bairro-info { padding: 12px 14px; border-bottom: 1px solid var(--border); background: var(--white); }
+.bairro-name { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 400; color: var(--ink); margin-bottom: 4px; line-height: 1.2; }
+.bairro-desc { font-size: 12px; color: var(--ink2); line-height: 1.6; margin-bottom: 7px; }
+.bairro-tip { font-size: 11px; color: var(--gold); padding: 5px 9px; background: var(--gold-soft); border-radius: 6px; border-left: 2px solid var(--gold-border); line-height: 1.5; }
 
-/* PLACES */
-.places-list { padding: 10px 10px 20px; }
-.section-div {
-  font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
-  color: var(--ink3); padding: 8px 4px 5px;
-  display: flex; align-items: center; gap: 6px;
-}
-.section-div::after {
-  content: ''; flex: 1; height: 1px; background: var(--border);
-}
+/* PLACES LIST */
+.places-list { padding: 8px 8px 80px; }
+.section-div { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink3); padding: 8px 4px 5px; display: flex; align-items: center; gap: 6px; }
+.section-div::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
+/* ── COMPACT CARDS ── */
 .place-card {
-  padding: 10px 12px; border-radius: 8px; margin-bottom: 5px;
-  cursor: pointer; border: 1px solid transparent;
+  padding: 9px 11px; border-radius: 8px; margin-bottom: 5px;
+  cursor: pointer; border: 1px solid var(--border);
   transition: all 0.15s; background: var(--white);
-  border-color: var(--border);
+  display: flex; flex-direction: column; gap: 3px;
 }
 .place-card:hover { border-color: var(--gold-border); box-shadow: 0 2px 8px rgba(168,136,74,0.08); }
 .place-card.highlighted { border-color: var(--gold); background: var(--gold-soft); }
-.pc-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 2px; }
-.pc-name { font-size: 13px; font-weight: 500; color: var(--ink); line-height: 1.3; }
-.pc-star { color: var(--gold); font-size: 11px; flex-shrink: 0; margin-top: 2px; }
-.cat-pill {
-  font-size: 10px; padding: 2px 7px; border-radius: 20px;
-  white-space: nowrap; flex-shrink: 0; margin-top: 1px;
-  font-weight: 400;
-}
+.pc-row1 { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.pc-name { font-size: 13px; font-weight: 500; color: var(--ink); line-height: 1.3; flex: 1; }
+.pc-meta { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+.pc-star { color: var(--gold); font-size: 10px; }
+.pc-score { font-size: 10px; color: var(--ink3); }
+.cat-pill { font-size: 10px; padding: 1px 6px; border-radius: 20px; white-space: nowrap; }
 .pill-rest { background: rgba(139,58,58,0.08); color: var(--rest); }
 .pill-bar  { background: rgba(74,58,107,0.08); color: var(--bar); }
 .pill-cafe { background: rgba(107,74,30,0.08); color: var(--cafe); }
 .pill-shop { background: rgba(30,74,107,0.08); color: var(--shop); }
 .pill-act  { background: rgba(42,92,58,0.08); color: var(--act); }
-.pc-who { font-size: 10px; color: var(--ink3); margin-bottom: 3px; }
-.pc-note { font-size: 11px; color: var(--ink2); line-height: 1.5; }
-.pc-link {
-  display: inline-block; margin-top: 6px;
-  font-size: 10px; color: var(--gold);
-  text-decoration: none; letter-spacing: 0.03em;
-  border-bottom: 1px solid var(--gold-border);
-  padding-bottom: 1px; transition: all 0.15s;
-}
-.pc-link:hover { color: var(--ink); border-bottom-color: var(--border); }
+.pc-who { font-size: 10px; color: var(--ink3); }
+.pc-note-wrap { overflow: hidden; max-height: 0; transition: max-height 0.25s ease; }
+.pc-note-wrap.open { max-height: 200px; }
+.pc-note { font-size: 11px; color: var(--ink2); line-height: 1.5; padding-top: 5px; }
+.pc-links { display: flex; gap: 8px; padding-top: 5px; flex-wrap: wrap; }
+.pc-link { font-size: 10px; color: var(--gold); text-decoration: none; letter-spacing: 0.02em; border-bottom: 1px solid var(--gold-border); padding-bottom: 1px; transition: all 0.15s; white-space: nowrap; }
+.pc-link:hover { color: var(--ink); }
+.pc-toggle { font-size: 10px; color: var(--ink3); cursor: pointer; background: none; border: none; font-family: 'DM Sans', sans-serif; padding: 0; letter-spacing: 0.02em; transition: color 0.15s; }
+.pc-toggle:hover { color: var(--gold); }
+.results-count { font-size: 11px; color: var(--ink3); padding: 6px 12px 0; }
 
-/* MAP */
-.leaflet-popup-content-wrapper {
+/* MAP OVERVIEW BUTTON */
+.map-overview-btn {
+  position: absolute; top: 12px; left: 12px; z-index: 1000;
   background: var(--white); border: 1px solid var(--border);
-  border-radius: 10px; color: var(--ink);
-  box-shadow: 0 4px 24px rgba(28,25,22,0.12);
+  border-radius: 8px; padding: 6px 12px; font-size: 11px;
+  color: var(--ink2); cursor: pointer; font-family: 'DM Sans', sans-serif;
+  box-shadow: 0 2px 8px rgba(28,25,22,0.08); transition: all 0.15s;
+  display: flex; align-items: center; gap: 5px;
 }
+.map-overview-btn:hover { border-color: var(--gold-border); color: var(--gold); }
+
+/* MAP POPUP */
+.leaflet-popup-content-wrapper { background: var(--white); border: 1px solid var(--border); border-radius: 10px; color: var(--ink); box-shadow: 0 4px 24px rgba(28,25,22,0.12); }
 .leaflet-popup-tip { background: var(--white); }
-.leaflet-popup-content { margin: 12px 14px; font-family: 'DM Sans', sans-serif; }
-.popup-name {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 16px; color: var(--ink); margin-bottom: 2px;
-}
-.popup-cat { font-size: 11px; color: var(--ink3); margin-bottom: 6px; }
-.popup-note { font-size: 12px; color: var(--ink2); line-height: 1.5; margin-bottom: 8px; }
-.popup-link {
-  display: inline-block; font-size: 11px; padding: 5px 12px;
-  border-radius: 6px; border: 1px solid var(--gold-border);
-  color: var(--gold); text-decoration: none; transition: all 0.15s;
-}
+.leaflet-popup-content { margin: 10px 13px; font-family: 'DM Sans', sans-serif; min-width: 180px; }
+.popup-name { font-family: 'Cormorant Garamond', serif; font-size: 15px; color: var(--ink); margin-bottom: 2px; }
+.popup-cat { font-size: 11px; color: var(--ink3); margin-bottom: 5px; }
+.popup-note { font-size: 11px; color: var(--ink2); line-height: 1.5; margin-bottom: 7px; }
+.popup-links { display: flex; gap: 8px; flex-wrap: wrap; }
+.popup-link { display: inline-block; font-size: 10px; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--gold-border); color: var(--gold); text-decoration: none; transition: all 0.15s; white-space: nowrap; }
 .popup-link:hover { background: var(--gold); color: var(--white); }
-.leaflet-control-zoom a {
-  background: var(--white) !important;
-  border-color: var(--border) !important;
-  color: var(--ink) !important;
-}
+.leaflet-control-zoom a { background: var(--white) !important; border-color: var(--border) !important; color: var(--ink) !important; }
 
-/* COUNT */
-.results-count {
-  font-size: 11px; color: var(--ink3); padding: 8px 14px 0;
-  letter-spacing: 0.02em;
-}
-
+/* ── MOBILE LAYOUT ── */
 @media (max-width: 700px) {
-  .sidebar { width: 100%; height: 42vh; }
-  .main { flex-direction: column; }
-  .map-wrap { height: 58vh; }
+  :root { --sidebar: 100%; }
+  body { overflow: hidden; }
+  .header-sub { display: none; }
+  .header-title { font-size: 15px; }
+
+  .main {
+    flex-direction: column-reverse; /* map on top, sheet slides up */
+    position: relative;
+  }
+
+  /* MAP takes full screen on mobile */
+  .map-wrap {
+    position: fixed;
+    top: calc(var(--header-h) + var(--tabs-h));
+    left: 0; right: 0; bottom: 0;
+    z-index: 1;
+  }
+
+  /* BOTTOM SHEET */
+  .sidebar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 100;
+    width: 100%;
+    height: auto;
+    max-height: 65vh;
+    border-right: none;
+    border-top: 1px solid var(--border);
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -4px 24px rgba(28,25,22,0.12);
+    overflow-y: auto;
+    transition: max-height 0.3s ease;
+  }
+
+  .sidebar.collapsed { max-height: 90px; overflow: hidden; }
+
+  /* DRAG HANDLE */
+  .sheet-handle {
+    width: 36px; height: 4px; background: var(--border);
+    border-radius: 2px; margin: 10px auto 0;
+    cursor: pointer; flex-shrink: 0;
+  }
+
+  .bairro-info { padding: 10px 14px 8px; }
+  .bairro-desc { display: none; }
+  .filters { padding: 8px 12px; }
+  .places-list { padding-bottom: 40px; }
+
+  /* Map overview btn on mobile */
+  .map-overview-btn { top: auto; bottom: 12px; left: 12px; }
 }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div class="header-brand">
-    <span class="header-cat">🐱</span>
-    <div>
-      <div class="header-title">Lua de Mel dos <em>Gatos</em> &nbsp;·&nbsp; Tokyo</div>
-    </div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <span style="font-size:18px">🐱</span>
+    <div class="header-title">Lua de Mel dos <em>Gatos</em> &nbsp;·&nbsp; Tokyo</div>
   </div>
-  <div style="display:flex;align-items:center;gap:16px">
-    <span class="header-sub">8 – 14 dez 2026</span>
+  <div class="header-right">
+    <span class="header-sub">8–14 dez 2026</span>
     <a href="index.html" class="nav-link">Reservas</a>
   </div>
 </div>
@@ -238,7 +207,8 @@ body { background: var(--bg); color: var(--ink); font-family: 'DM Sans', sans-se
 <div class="tabs-bar" id="tabs-bar"></div>
 
 <div class="main">
-  <div class="sidebar">
+  <div class="sidebar" id="sidebar">
+    <div class="sheet-handle" id="sheet-handle" onclick="toggleSheet()"></div>
     <div class="filters" id="filters">
       <div class="filter-wrap">
         <div class="filter-label">Categoria</div>
@@ -269,6 +239,7 @@ body { background: var(--bg); color: var(--ink); font-family: 'DM Sans', sans-se
   </div>
   <div class="map-wrap">
     <div id="map"></div>
+    <button class="map-overview-btn" onclick="showOverview()">🗾 Ver todos os bairros</button>
   </div>
 </div>
 
@@ -573,10 +544,10 @@ const PLACES = [
   {b:'outros',name:'Nakano Broadway',cat:'shop',lat:35.7079,lng:139.6658,who:'Fernanda',score:2.8,note:'Fernanda: só vale se quiser comprar relógios vintage.'},
 
   // JULIANA VOLPINI
-  {b:'ginza',name:'Ginza Hachigo',cat:'rest',lat:35.6713,lng:139.7653,who:'Juliana',score:4.2,note:'Juliana: fila enorme mas o melhor ramen da vida dela — bizarro de bom, preço top. Entusiasmo máximo.'},
+  {b:'ginza',name:'Ginza Hachigo',cat:'rest',lat:35.6697,lng:139.7698,who:'Juliana',score:4.2,note:'Juliana: melhor ramen da vida dela — bizarro de bom. Michelin Bib Gourmand. Chef com 30 anos de cozinha francesa. Caldo tipo consommé. Só 6 lugares. Chegar cedo.',url:'https://katsumoto-japan.com/en/ginza_hachigou.html'},
   {b:'ginza',name:'Tachigui Sushi Akira',cat:'rest',lat:35.6720,lng:139.7648,who:'Juliana',score:4.0,note:'Juliana: standing sushi em Ginza. Rápido, autêntico, bom custo-benefício.'},
   {b:'roppongi',name:'Azabu Kumasan',cat:'rest',lat:35.6570,lng:139.7290,who:'Juliana',score:4.2,note:'Juliana: experiência de wagyu em diferentes maneiras e texturas. Degustação de wagyu — único na lista.'},
-  {b:'roppongi',name:'Folklore',cat:'bar',lat:35.6610,lng:139.7280,who:'Juliana',score:4.2,note:'Juliana: omakase de drinks de sake — cada drink vem com uma coisinha para comer. Conceito autoral único. Reservar.'},
+  {b:'ginza',name:'Folklore',cat:'bar',lat:35.6736,lng:139.7590,who:'Juliana',score:4.2,note:'Juliana: omakase de drinks de sake/shochu — cada drink vem com petisco japonês. Fica em Hibiya OKUROJI, entre Ginza e Tokio Station. Michelin group. Reservar.',url:'https://autoreserve.com/en/restaurants/FQET57aBJKua7qNskU1Z'},
   {b:'roppongi',name:'SG Low',cat:'bar',lat:35.6608,lng:139.7295,who:'Juliana',score:4.2,note:'Juliana: speakeasy top! Diferente do SG Club. Alta prioridade.'},
   {b:'roppongi',name:'Shogun Pizza',cat:'rest',lat:35.6565,lng:139.7305,who:'Juliana',score:3.8,note:'Juliana: deliciosa, divina, must come. Terceira opção forte de pizza (junto com PST e RistoPizza).'},
   {b:'shibuya',name:'Verver',cat:'cafe',lat:35.6490,lng:139.7025,who:'Juliana',score:3.2,note:'Juliana: cappuccino divino. Café em Daikanyama.'},
@@ -594,6 +565,90 @@ const PLACES = [
   {b:'outros',name:'Number Sugar',cat:'cafe',lat:35.6750,lng:139.7200,who:'Juliana',score:3.5,note:'Juliana: docinhos top. Caramelos artesanais numerados com sabores diferentes.'},
   {b:'outros',name:'Tea Bar Tokyo',cat:'cafe',lat:35.6700,lng:139.7300,who:'Juliana',score:3.2,note:'Juliana: experiência de chá em formato de degustação. Nome exato a confirmar.'},
 ];
+
+// OVERVIEW: zoom out to see all bairros with colored polygons
+const BAIRRO_COLORS = {
+  ginza:'#A8884A', roppongi:'#4A3A6B', shibuya:'#8B3A3A',
+  shinjuku:'#2A5C3A', harajuku:'#1E4A6B', asakusa:'#6B4A1E',
+  goldengai:'#2A5C3A', daikanyama:'#935116', outros:'#888'
+};
+
+// Rough bounding boxes per bairro for polygon overlay
+const BAIRRO_BOUNDS = {
+  ginza: [[35.660,139.760],[35.660,139.775],[35.678,139.775],[35.678,139.760]],
+  roppongi: [[35.655,139.724],[35.655,139.738],[35.668,139.738],[35.668,139.724]],
+  shibuya: [[35.653,139.695],[35.653,139.712],[35.667,139.712],[35.667,139.695]],
+  shinjuku: [[35.685,139.695],[35.685,139.712],[35.700,139.712],[35.700,139.695]],
+  harajuku: [[35.663,139.698],[35.663,139.715],[35.677,139.715],[35.677,139.698]],
+  asakusa: [[35.707,139.790],[35.707,139.803],[35.720,139.803],[35.720,139.790]],
+  goldengai: [[35.690,139.699],[35.690,139.707],[35.697,139.707],[35.697,139.699]],
+  daikanyama: [[35.645,139.698],[35.645,139.708],[35.652,139.708],[35.652,139.698]],
+};
+
+let overviewPolygons = [];
+let isOverview = false;
+
+function showOverview() {
+  isOverview = true;
+  // Clear current markers
+  markers.forEach(m => map.removeLayer(m.marker));
+  markers = [];
+  // Clear existing polygons
+  overviewPolygons.forEach(p => map.removeLayer(p));
+  overviewPolygons = [];
+  // Draw all bairro polygons
+  BAIRROS.filter(b => b.id !== 'outros').forEach(b => {
+    const coords = BAIRRO_BOUNDS[b.id];
+    if (!coords) return;
+    const color = BAIRRO_COLORS[b.id] || '#888';
+    const poly = L.polygon(coords, {
+      color: color, weight: 2, opacity: 0.8,
+      fillColor: color, fillOpacity: 0.12
+    }).addTo(map);
+    poly.bindTooltip(b.name.split('·')[0].trim(), {
+      permanent: true, direction: 'center',
+      className: 'bairro-label'
+    });
+    poly.on('click', () => { switchBairro(b.id); });
+    overviewPolygons.push(poly);
+  });
+  map.setView([35.678, 139.720], 13);
+  document.getElementById('bairro-info').innerHTML = `
+    <div class="bairro-name" style="font-size:15px">Todos os bairros</div>
+    <div class="bairro-desc">Clique num bairro no mapa para explorar.</div>`;
+  document.getElementById('places-list').innerHTML = '';
+  document.getElementById('results-count').textContent = '';
+}
+
+// Override switchBairro to clear polygons
+const _origSwitch = switchBairro;
+
+function switchBairro(id) {
+  if (isOverview) {
+    isOverview = false;
+    overviewPolygons.forEach(p => map.removeLayer(p));
+    overviewPolygons = [];
+  }
+  currentBairro = id;
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.id === id));
+  const b = BAIRROS.find(x => x.id === id);
+  map.setView(b.center, b.zoom);
+  renderMap(id);
+  renderSidebar(id);
+}
+
+// MOBILE: toggle bottom sheet
+let sheetExpanded = true;
+function toggleSheet() {
+  sheetExpanded = !sheetExpanded;
+  const sidebar = document.getElementById('sidebar');
+  sidebar.classList.toggle('collapsed', !sheetExpanded);
+}
+
+// Add tooltip style
+const tooltipStyle = document.createElement('style');
+tooltipStyle.textContent = '.bairro-label { background: rgba(255,255,255,0.9); border: none; box-shadow: none; font-family: "DM Sans", sans-serif; font-size: 11px; color: #1C1916; font-weight: 500; padding: 2px 6px; border-radius: 4px; }';
+document.head.appendChild(tooltipStyle);
 
 const tabsBar = document.getElementById('tabs-bar');
 BAIRROS.forEach((b, i) => {

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Japão 2026 — Reservas</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#F7F4EF;--ink:#1A1814;--ink-light:#6B6560;--ink-faint:#B8B2AA;--red:#C0392B;--red-soft:#F9ECEB;--green:#2D6A4F;--green-soft:#EAF2EE;--amber:#8B5E00;--amber-soft:#FBF4E6;--blue:#1A4A7A;--blue-soft:#EAF0F8;--border:#E2DDD6}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--cream);color:var(--ink);font-family:'DM Sans',sans-serif;min-height:100vh}
+.site-header{background:var(--ink);color:var(--cream);padding:3rem 2rem 2.5rem;position:relative;overflow:hidden}
+.site-header::before{content:'日本';position:absolute;right:-20px;top:-20px;font-size:160px;font-family:serif;opacity:.06;line-height:1;pointer-events:none}
+.header-inner{max-width:760px;margin:0 auto;position:relative}
+.header-label{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:rgba(247,244,239,.5);margin-bottom:10px}
+.header-title{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,6vw,52px);font-weight:300;line-height:1.1;margin-bottom:6px}
+.header-title em{font-style:italic}
+.header-sub{font-size:13px;color:rgba(247,244,239,.6);margin-top:10px}
+.stats-bar{background:white;border-bottom:1px solid var(--border);padding:1rem 2rem;position:sticky;top:0;z-index:10;box-shadow:0 1px 12px rgba(26,24,20,.06)}
+.stats-inner{max-width:760px;margin:0 auto;display:flex;gap:2rem;align-items:center;flex-wrap:wrap}
+.stat{display:flex;align-items:baseline;gap:6px}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;line-height:1}
+.stat-num.green{color:var(--green)}.stat-num.amber{color:var(--amber)}.stat-num.red{color:var(--red)}
+.stat-label{font-size:12px;color:var(--ink-light)}
+.stats-divider{width:1px;height:28px;background:var(--border)}
+.progress-wrap{margin-left:auto;display:flex;align-items:center;gap:10px}
+.progress-bar{width:120px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:var(--green);border-radius:2px;transition:width .4s ease}
+.progress-text{font-size:12px;color:var(--ink-light);white-space:nowrap}
+.main{max-width:760px;margin:0 auto;padding:2rem}
+.section{margin-bottom:2.5rem}
+.section-title{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:1rem;padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.section-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.dot-open{background:var(--green)}.dot-wait{background:var(--amber)}.dot-done{background:var(--ink-faint)}
+.card{background:white;border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:10px;transition:box-shadow .15s,opacity .2s}
+.card:hover{box-shadow:0 4px 20px rgba(26,24,20,.08)}
+.card.is-done{opacity:.5}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:6px}
+.card-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;line-height:1.2}
+.card-tags{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0}
+.tag{font-size:10px;padding:3px 8px;border-radius:20px;letter-spacing:.05em;white-space:nowrap;font-weight:500}
+.tag-city{background:var(--cream);color:var(--ink-light);border:1px solid var(--border)}
+.tag-open{background:var(--green-soft);color:var(--green)}
+.tag-wait{background:var(--amber-soft);color:var(--amber)}
+.tag-done{background:var(--green-soft);color:var(--green)}
+.tag-soon{background:var(--blue-soft);color:var(--blue)}
+.card-meta{font-size:12px;color:var(--ink-light);margin-bottom:8px;line-height:1.6}
+.countdown{font-size:12px;font-weight:500;color:var(--amber);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.countdown.open{color:var(--green)}
+.countdown::before{content:'◈';font-size:10px}
+.allergy-box{background:var(--red-soft);border-left:3px solid var(--red);padding:8px 12px;border-radius:0 6px 6px 0;margin-bottom:10px;font-size:11px;color:var(--red);line-height:1.6}
+.allergy-text{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;margin-top:3px;color:#8B1A1A}
+.dm-box{background:var(--blue-soft);border-left:3px solid var(--blue);padding:8px 12px;border-radius:0 6px 6px 0;margin-bottom:8px;font-size:12px;color:var(--ink);line-height:1.6;font-style:italic}
+.note{font-size:11px;color:var(--ink-faint);margin-bottom:10px;line-height:1.6;padding-left:10px;border-left:2px solid var(--border)}
+.card-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}
+.btn{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:7px 14px;border-radius:8px;border:1px solid var(--border);background:white;cursor:pointer;color:var(--ink);text-decoration:none;font-family:'DM Sans',sans-serif;font-weight:400;transition:all .15s;white-space:nowrap}
+.btn:hover{border-color:var(--ink-light);background:var(--cream)}
+.btn-primary{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+.btn-primary:hover{background:#333}
+.btn-success{background:var(--green);color:white;border-color:var(--green)}
+.btn-success:hover{background:#235C41}
+.btn-copy{font-size:11px;padding:4px 10px}
+.btn-undo{font-size:11px;color:var(--ink-faint);padding:4px 10px}
+.done-row{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--green)}
+.done-icon{width:18px;height:18px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.done-icon svg{width:10px;height:10px}
+.footer{text-align:center;padding:2rem;font-size:11px;color:var(--ink-faint);border-top:1px solid var(--border);margin-top:2rem}
+@media(max-width:600px){.site-header{padding:2rem 1.25rem}.stats-bar{padding:.75rem 1.25rem}.stats-inner{gap:1rem}.progress-wrap{margin-left:0;width:100%}.main{padding:1.25rem}.card{padding:14px 16px}.stats-divider{display:none}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-label">Lua de mel · Nov–Dez 2026</div>
+    <div class="header-title">Japão — <em>tracker de reservas</em></div>
+    <div class="header-sub">27 nov → 14 dez &nbsp;·&nbsp; Nikko · Kanazawa · Kyoto · Osaka · Tokyo</div>
+  </div>
+</header>
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat"><span class="stat-num green" id="s-done">0</span><span class="stat-label">feitas</span></div>
+    <div class="stats-divider"></div>
+    <div class="stat"><span class="stat-num amber" id="s-open">0</span><span class="stat-label">abertas agora</span></div>
+    <div class="stats-divider"></div>
+    <div class="stat"><span class="stat-num red" id="s-wait">0</span><span class="stat-label">aguardando</span></div>
+    <div class="stats-divider"></div>
+    <div class="stat"><span class="stat-num" id="s-total">9</span><span class="stat-label">total</span></div>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <span class="progress-text" id="progress-text">0 de 9 feitas</span>
+    </div>
+  </div>
+</div>
+<main class="main">
+  <div id="section-open" class="section"></div>
+  <div id="section-wait" class="section"></div>
+  <div id="section-done" class="section"></div>
+</main>
+<footer class="footer">Feito com Claude · Status salvo no seu navegador · Japão 2026</footer>
+<script>
+const TODAY=new Date('2026-04-20');
+const ALLERGY='I have a shellfish allergy (crustaceans). Please no shrimp, crab, or lobster in my course.';
+const RESERVATIONS=[
+{id:'yohey',name:'Sushiya Yohey',city:'Osaka · 6–7 dez',meta:'Jantar · talvez o melhor omakase da viagem (Fernanda) · ~¥45.000/pp',platform:'omakase.in/en',openDate:'2026-05-01',openNote:'1 mai às 14h JST = 6h Brasília',url:'https://omakase.in/en/r/xp919884',allergy:true,note:'Se dezembro não aparecer em 1 mai, voltar em 1 set.'},
+{id:'saeki',name:'Sushi Saeki',city:'Kyoto · 2–5 dez',meta:'Jantar · melhor omakase segundo Fernanda · ~¥46.000/pp',platform:'omakase.in/en',openDate:'2026-05-01',openNote:'1 mai às 14h JST = 6h Brasília',url:'https://omakase.in/en/r/qg559453',allergy:true,note:'Alternativa: tableall.com. Voltar em 1 set se dezembro não abrir.'},
+{id:'fukuzuka',name:'Sushi Fukuzuka',city:'Tokyo · 8–13 dez',meta:'Jantar · 5 estrelas da Fernanda · Kagurazaka · ¥38.000/pp',platform:'OpenTable',openDate:'2026-10-01',openNote:'~1 out — abre com ~2 meses de antecedência',url:'https://www.opentable.com/r/sushi-fukuzuka-shinjuku-ku',allergy:true,note:'Se outubro não aceitar, tentar novamente em novembro.'},
+{id:'beatlemomo',name:'Beatlemomo',city:'Kyoto · 2–5 dez',meta:'Noite · bar de vinil em Ponto-Cho · staff fala inglês · fechado às quartas',platform:'Instagram DM @beatlemomo_kyoto',openDate:'2026-10-01',openNote:'~1 out — enviar DM no Instagram',url:'https://www.instagram.com/beatlemomo_kyoto/',dm:'Hi! I\'d love to make a reservation for 2 people. We\'ll be in Kyoto from December 2nd to 6th, 2026. Any evening Thursday to Saturday works for us. Thank you!',note:'Mandar DM diretamente — mais confiável que Tabelog.'},
+{id:'benfiddich',name:'Bar Benfiddich',city:'Tokyo · 8–13 dez',meta:'Noite · #18 World\'s 50 Best Bars · 15 lugares · horários: 19h / 21h / 23h',platform:'TableCheck (benfiddich.tokyo)',openDate:'2026-11-20',openNote:'20 nov às 14h JST = 6h Brasília — data exata',url:'https://benfiddich.tokyo/en/index.html',note:'Cancela automaticamente se atrasar 15 min.'},
+{id:'pst',name:'PST Roppongi',city:'Tokyo · 8–13 dez',meta:'Jantar · pizza favorita da Fernanda · Roppongi · casual',platform:'Google Maps / site',openDate:'2026-10-01',openNote:'~1 out — 1–2 meses de antecedência',url:'https://maps.google.com',note:'Walk-in possível, mas para lua de mel vale garantir.'},
+{id:'inamoto',name:'Komedokoro Inamoto',city:'Kyoto · 2–5 dez',meta:'Jantar · Bib Gourmand · Ponto-Cho · menu em japonês',platform:'Concierge Six Senses / Tabelog',openDate:'2026-10-01',openNote:'~1 out — pedir ao concierge do Six Senses',url:'https://tabelog.com',note:'Pedir ao concierge do hotel para ligar em japonês. Levar Google Lens.'},
+{id:'yasawa',name:'Yakiniku Yasawa',city:'Kyoto · 2–5 dez',meta:'Jantar · wagyu yakiniku · Gion/Kawaramachi',platform:'Tabelog',openDate:'2026-10-01',openNote:'~1 out — alguns dias antes é suficiente',url:'https://tabelog.com',note:null},
+{id:'these',name:'Bar These / THESE',city:'Tokyo · 8–13 dez',meta:'Noite · você escolhe uma fruta, eles montam o drink · Roppongi',platform:'Instagram / site',openDate:'2026-10-01',openNote:'~1 out — via Instagram ou site',url:'https://www.instagram.com/',note:'Walk-in possível em semana.'},
+];
+function daysUntil(d){return Math.round((new Date(d)-TODAY)/(864e5))}
+function cd(dateStr){const d=daysUntil(dateStr);if(d<=0)return{text:'Aberta agora ✓',open:true};if(d===1)return{text:'Abre amanhã',open:false};if(d<30)return{text:`Abre em ${d} dias`,open:false};const m=Math.round(d/30);return{text:`Abre em ~${m} ${m===1?'mês':'meses'}`,open:false}}
+function loadState(){try{return JSON.parse(localStorage.getItem('japan-rsv-2026')||'{}')}catch(e){return{}}}
+function saveState(s){localStorage.setItem('japan-rsv-2026',JSON.stringify(s))}
+let state=loadState();
+function copy(text,btn){navigator.clipboard.writeText(text).then(()=>{const o=btn.textContent;btn.textContent='Copiado!';setTimeout(()=>btn.textContent=o,2000)})}
+function markDone(id){state[id]=true;saveState(state);render()}
+function markUndone(id){state[id]=false;saveState(state);render()}
+function renderCard(r){
+const done=!!state[r.id];const c=cd(r.openDate);const isOpen=c.open;
+const tagStatus=done?'<span class="tag tag-done">feita ✓</span>':isOpen?'<span class="tag tag-open">aberta agora</span>':daysUntil(r.openDate)<60?'<span class="tag tag-soon">em breve</span>':'<span class="tag tag-wait">aguardando</span>';
+const allergyHtml=r.allergy?`<div class="allergy-box">⚠ Alergia — copiar no campo de observações:<div class="allergy-text">${ALLERGY}</div><button class="btn btn-copy" style="margin-top:6px" onclick="copy('${ALLERGY}',this)">Copiar</button></div>`:'';
+const dmHtml=r.dm?`<div class="dm-box">"${r.dm}"</div><button class="btn btn-copy" style="margin-bottom:8px" onclick="copy(\`${r.dm}\`,this)">Copiar mensagem</button>`:'';
+const noteHtml=r.note?`<div class="note">${r.note}</div>`:'';
+const actions=done?`<div class="done-row"><div class="done-icon"><svg viewBox="0 0 10 10" fill="none"><polyline points="2,5 4,7 8,3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Reserva confirmada</div><button class="btn btn-undo" onclick="markUndone('${r.id}')">Desfazer</button>`:`<a class="btn ${isOpen?'btn-primary':''}" href="${r.url}" target="_blank">Abrir plataforma →</a><button class="btn btn-success" onclick="markDone('${r.id}')">Marcar como feita ✓</button>`;
+return`<div class="card ${done?'is-done':''}" id="card-${r.id}"><div class="card-top"><div class="card-name">${r.name}</div><div class="card-tags"><span class="tag tag-city">${r.city}</span>${tagStatus}</div></div><div class="card-meta">${r.meta} · ${r.platform}</div><div class="countdown ${c.open?'open':''}">${c.text} · ${r.openNote}</div>${allergyHtml}${dmHtml}${noteHtml}<div class="card-actions">${actions}</div></div>`}
+function render(){
+const done=RESERVATIONS.filter(r=>state[r.id]);
+const open=RESERVATIONS.filter(r=>!state[r.id]&&daysUntil(r.openDate)<=0);
+const wait=RESERVATIONS.filter(r=>!state[r.id]&&daysUntil(r.openDate)>0).sort((a,b)=>new Date(a.openDate)-new Date(b.openDate));
+document.getElementById('s-done').textContent=done.length;
+document.getElementById('s-open').textContent=open.length;
+document.getElementById('s-wait').textContent=wait.length;
+const pct=Math.round(done.length/RESERVATIONS.length*100);
+document.getElementById('progress-fill').style.width=pct+'%';
+document.getElementById('progress-text').textContent=`${done.length} de ${RESERVATIONS.length} feitas`;
+document.getElementById('section-open').innerHTML=open.length?`<div class="section-title"><span class="section-dot dot-open"></span>Abertas agora — reservar hoje</div>${open.map(renderCard).join('')}`:'';
+document.getElementById('section-wait').innerHTML=wait.length?`<div class="section-title"><span class="section-dot dot-wait"></span>Aguardando abertura</div>${wait.map(renderCard).join('')}`:'';
+document.getElementById('section-done').innerHTML=done.length?`<div class="section-title"><span class="section-dot dot-done"></span>Concluídas</div>${done.map(renderCard).join('')}`:'';
+}
+render();
+</script>
+</body>
+</html>

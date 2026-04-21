@@ -84,14 +84,14 @@ body { background: var(--bg); color: var(--ink); font-family: 'DM Sans', sans-se
 
 /* SIDEBAR COLLAPSE */
 .sidebar-toggle {
-  position: absolute; top: 50%; right: -14px;
+  position: absolute; top: 50%; left: 12px;
   transform: translateY(-50%);
   width: 28px; height: 28px; border-radius: 50%;
   background: var(--white); border: 1px solid var(--border);
   display: flex; align-items: center; justify-content: center;
-  cursor: pointer; z-index: 10; font-size: 12px;
+  cursor: pointer; z-index: 10; font-size: 14px;
   box-shadow: 0 2px 6px rgba(28,25,22,0.1);
-  transition: all 0.15s; color: var(--ink2);
+  transition: all 0.2s; color: var(--ink2);
 }
 .sidebar-toggle:hover { border-color: var(--gold); color: var(--gold); }
 .sidebar.collapsed-desktop { width: 0 !important; overflow: hidden; border-right: none; }
@@ -296,7 +296,6 @@ mark { background: var(--gold-soft); color: var(--ink); border-radius: 2px; padd
 <div class="main">
   <div class="sidebar" id="sidebar" style="position:relative">
     <div class="sheet-handle" id="sheet-handle" onclick="toggleSheet()"></div>
-    <button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()" title="Minimizar">‹</button>
     <div class="filters" id="filters">
       <div class="filter-wrap">
         <div class="filter-label">Categoria</div>
@@ -333,6 +332,7 @@ mark { background: var(--gold-soft); color: var(--ink); border-radius: 2px; padd
   <div class="map-wrap">
     <div id="map"></div>
     <button class="map-overview-btn" onclick="showOverview()">🗾 Ver todos os bairros</button>
+    <button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()" title="Minimizar">‹</button>
   </div>
 </div>
 
@@ -852,8 +852,6 @@ function toggleSidebar() {
   const toggle = document.getElementById('sidebar-toggle');
   sidebar.classList.toggle('collapsed-desktop', !sidebarOpen);
   toggle.textContent = sidebarOpen ? '‹' : '›';
-  toggle.style.right = sidebarOpen ? '-14px' : '-28px';
-  // Nudge map to re-render
   setTimeout(() => map.invalidateSize(), 300);
 }
 

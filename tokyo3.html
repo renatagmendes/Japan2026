@@ -440,12 +440,16 @@ function renderMap(bairroId) {
   getFiltered(bairroId).forEach(p => {
     const sl = SHORTLIST.has(p.name);
     const m = L.marker([p.lat, p.lng], { icon: makeIcon(p.cat, sl) }).addTo(map);
+    const siteBtn = p.url ? `<a class="popup-link" href="${p.url}" target="_blank">Site oficial →</a>` : '';
     m.bindPopup(`
       <div class="popup-name">${p.name}${sl?' ★':''}</div>
       <div class="popup-cat">${CAT_LABELS[p.cat]||p.cat} · Score ${p.score} · ${p.who}</div>
       <div class="popup-note">${p.note}</div>
-      <a class="popup-link" href="${gmapsUrl(p.name,p.lat,p.lng)}" target="_blank">Abrir no Google Maps →</a>
-    `, { maxWidth:240 });
+      <div class="popup-links">
+        <a class="popup-link" href="${gmapsUrl(p.name,p.lat,p.lng)}" target="_blank">Google Maps →</a>
+        ${siteBtn}
+      </div>
+    `, { maxWidth:260 });
     m.on('click', () => highlightCard(p.name));
     markers.push({ marker:m, name:p.name });
   });

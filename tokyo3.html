@@ -359,33 +359,33 @@ mark { background: var(--gold-soft); color: var(--ink); border-radius: 2px; padd
 
 <script>
 const BAIRROS = [
-  { id:'ginza', name:'Ginza · Tsukiji · Marunouchi', emoji:'✦', center:[35.6717,139.7664], zoom:15,
-    desc:'Seu hub principal — o Peninsula fica aqui. Ginza é a Quinta Avenida de Tokyo. Tsukiji a 10 min a pé. Marunouchi colada, com as avenidas largas que a Fernanda adorou.',
-    tip:'Roteiro: Tsukiji de manhã cedo → Ginza almoço e tarde → Marunouchi fim de tarde.' },
-  { id:'roppongi', name:'Roppongi · Azabu · Minato', emoji:'🍕', center:[35.6628,139.7314], zoom:15,
-    desc:'Cluster de bares e gastronomia da noite. PST, Bar These, Azabudai Hills — tudo concentrado aqui. teamLab Borderless também fica no Azabudai.',
-    tip:'Azabudai Hills no final da tarde → PST para jantar → Bar These.' },
-  { id:'shibuya', name:'Shibuya · Ebisu · Daikanyama', emoji:'🍸', center:[35.6590,139.7005], zoom:15,
-    desc:'Cluster de bares de alta qualidade recomendados pelo Pika. The SG Club, The Bellwood, Spincoaster — todos aqui. Daikanyama é cool e arborizado.',
-    tip:'Daikanyama café (æ–ash) → Drink A10 → SG Club ou Bellwood.' },
-  { id:'shinjuku', name:'Shinjuku', emoji:'🎋', center:[35.6934,139.7031], zoom:15,
-    desc:'O bairro mais importante para noite autêntica. Golden Gai — estrela do Pika — fica aqui. Bar Benfiddich também. Melhor ramen da lista.',
-    tip:'Ramen no almoço → Shinjuku Gyoen → Golden Gai à noite → Benfiddich.' },
-  { id:'harajuku', name:'Harajuku · Omotesando · Aoyama', emoji:'🛍', center:[35.6702,139.7026], zoom:15,
-    desc:'Passeio e compras no seu estilo. Omotesando tem design e flagships. Gyoza-Ro é must do. Koffee Mameya Kakeru e Higuma Doughnuts ficam aqui.',
-    tip:'Meiji Jingu manhã → Gyoza-Ro almoço → Omotesando → Koffee Mameya (reservar).' },
-  { id:'asakusa', name:'Asakusa · Ueno', emoji:'⛩', center:[35.7147,139.7966], zoom:15,
-    desc:'O bairro mais tradicional. Senso-ji, Nakamise, Fuglen Asakusa. Ritmo mais lento, arquitetura antiga. Completamente diferente do resto de Tokyo.',
-    tip:'Senso-ji antes das 9h → Nakamise → Cremia sorvete → Fuglen Asakusa.' },
-  { id:'daikanyama', name:'Daikanyama · Nakameguro', emoji:'📚', center:[35.6484,139.7021], zoom:16,
-    desc:'O bairro mais local e autêntico da lista segundo a Juliana Volpini — ela comparou com o Brooklyn. Butiques independentes, cafés especiais, a Tsutaya Books (uma das livrarias mais bonitas do mundo) e o Meguro River. Completamente diferente de Shibuya ou Omotesando — ritmo mais lento, menos turistas, mais local.',
-    tip:'Tarde tranquila: Tsutaya Books → Garden House Crafts → Meguro River a pé → Spincoaster Music Bar (Ebisu, 10 min a pé).' },
-  { id:'goldengai', name:'Golden Gai · Omoide Yokocho', emoji:'🏮', center:[35.6936,139.7030], zoom:17,
-    desc:'O bairro mais raiz de Tokyo segundo o Pika. Golden Gai é um labirinto de vielas em Shinjuku com centenas de bares minúsculos — cada um tem 6 a 8 lugares, um dono diferente, uma vibe própria. Não é um bar, é um bairro inteiro para se perder à noite. Omoide Yokocho fica a 5 min a pé — também raiz, mas mais conhecido e menos autêntico que o Golden Gai. Pika foi claro: se tiver que escolher um, vai de Golden Gai.',
-    tip:'Chegar depois das 20h sem plano. Entrar no que parecer interessante. Deixar a noite acontecer.' },
-  { id:'outros', name:'Outros Bairros', emoji:'＋', center:[35.6762,139.6503], zoom:13,
-    desc:'Lugares especiais fora dos clusters principais: Maen (omakase + sake, Pika foi pessoalmente), Tomigaya, Nakameguro, Shimokitazawa.',
-    tip:'Encaixar no dia mais próximo geograficamente.' },
+  { id:"ginza", name:"Ginza · Tsukiji · Marunouchi", emoji:"✦", center:[35.6717,139.7664], zoom:15,
+    desc:"Seu hub principal — o Peninsula fica aqui. Ginza é a Quinta Avenida de Tokyo. Tsukiji a 10 min a pé. Marunouchi colada, com as avenidas largas que a Fernanda adorou.",
+    tip:"Roteiro: Tsukiji de manhã cedo → Ginza almoço e tarde → Marunouchi fim de tarde." },
+  { id:"roppongi", name:"Roppongi · Azabu · Minato", emoji:"🍕", center:[35.6628,139.7314], zoom:15,
+    desc:"Cluster de bares e gastronomia da noite. PST, Bar These, Azabudai Hills — tudo concentrado aqui. teamLab Borderless também fica no Azabudai.",
+    tip:"Azabudai Hills no final da tarde → PST para jantar → Bar These." },
+  { id:"shibuya", name:"Shibuya · Ebisu · Daikanyama", emoji:"🍸", center:[35.6590,139.7005], zoom:15,
+    desc:"Cluster de bares de alta qualidade recomendados pelo Pika. The SG Club, The Bellwood, Spincoaster — todos aqui. Daikanyama é cool e arborizado.",
+    tip:"Daikanyama café → Drink A10 → SG Club ou Bellwood." },
+  { id:"shinjuku", name:"Shinjuku", emoji:"🎋", center:[35.6934,139.7031], zoom:15,
+    desc:"O bairro mais importante para noite autêntica. Golden Gai — estrela do Pika — fica aqui. Bar Benfiddich também. Melhor ramen da lista.",
+    tip:"Ramen no almoço → Shinjuku Gyoen → Golden Gai à noite → Benfiddich." },
+  { id:"harajuku", name:"Harajuku · Omotesando · Aoyama", emoji:"🛍", center:[35.6702,139.7026], zoom:15,
+    desc:"Passeio e compras no seu estilo. Omotesando tem design e flagships. Gyoza-Ro é must do. Koffee Mameya Kakeru e Higuma Doughnuts ficam aqui.",
+    tip:"Meiji Jingu manhã → Gyoza-Ro almoço → Omotesando → Koffee Mameya (reservar)." },
+  { id:"asakusa", name:"Asakusa · Ueno", emoji:"⛩", center:[35.7147,139.7966], zoom:15,
+    desc:"O bairro mais tradicional. Senso-ji, Nakamise, Fuglen Asakusa. Ritmo mais lento, arquitetura antiga. Completamente diferente do resto de Tokyo.",
+    tip:"Senso-ji antes das 9h → Nakamise → Cremia sorvete → Fuglen Asakusa." },
+  { id:"daikanyama", name:"Daikanyama · Nakameguro", emoji:"📚", center:[35.6484,139.7021], zoom:16,
+    desc:"O bairro mais local segundo a Juliana Volpini — ela comparou com o Brooklyn. Butiques independentes, cafés especiais, a Tsutaya Books e o Meguro River. Ritmo mais lento, menos turistas, mais local.",
+    tip:"Tarde tranquila: Tsutaya Books → Garden House Crafts → Meguro River a pé → Spincoaster Music Bar." },
+  { id:"goldengai", name:"Golden Gai · Omoide Yokocho", emoji:"🏮", center:[35.6936,139.7030], zoom:17,
+    desc:"O bairro mais raiz de Tokyo segundo o Pika. Golden Gai é um labirinto de vielas em Shinjuku com centenas de bares minúsculos — cada um com 6 a 8 lugares e vibe própria. Omoide Yokocho fica a 5 min a pé — também raiz mas mais turistico. Pika recomenda: vai de Golden Gai.",
+    tip:"Chegar depois das 20h sem plano. Entrar no que parecer interessante. Deixar a noite acontecer." },
+  { id:"outros", name:"Outros Bairros", emoji:"+", center:[35.6762,139.6503], zoom:13,
+    desc:"Lugares especiais fora dos clusters principais: Maen (omakase + sake, Pika foi pessoalmente), Tomigaya, Nakameguro, Shimokitazawa.",
+    tip:"Encaixar no dia mais próximo geograficamente." },
 ];
 
 const SHORTLIST = new Set([
@@ -514,22 +514,47 @@ function renderSidebar(bairroId) {
 }
 
 function placeCard(p, inShortlist) {
-  const cat = p.cat;
-  return `<div class="place-card" data-name="${p.name.replace(/"/g,'&quot;')}"
-    onclick="focusPlace('${p.name.replace(/'/g,"\\'")}',${p.lat},${p.lng})">
-    <div class="pc-top">
-      <div class="pc-name">${p.name}</div>
-      <div style="display:flex;align-items:flex-start;gap:4px;flex-shrink:0">
-        ${inShortlist ? '<span class="pc-star">★</span>' : ''}
-        <span class="cat-pill pill-${cat}">${CAT_LABELS[cat]||cat}</span>
-      </div>
-    </div>
-    <div class="pc-who">${p.who} · ${p.score} ★</div>
-    <div class="pc-note">${p.note}</div>
-    <a class="pc-link" href="${gmapsUrl(p.name,p.lat,p.lng)}" target="_blank" onclick="event.stopPropagation()">
-      Ver no Google Maps →
-    </a>
-  </div>`;
+  var cat = p.cat;
+  var id = "c" + Math.random().toString(36).slice(2,8);
+  var siteLink = p.url ? "<a class=\"pc-link\" href=\"" + p.url + "\" target=\"_blank\" onclick=\"event.stopPropagation()\">Site oficial →</a>" : "";
+  var dirUrl = directionsUrl(p.lat, p.lng, p.name);
+  var gmUrl = gmapsUrl(p.name, p.lat, p.lng);
+  var star = inShortlist ? "<span class=\"pc-star\">★</span>" : "";
+  var pill = "<span class=\"cat-pill pill-" + cat + "\">" + (CAT_LABELS[cat]||cat) + "</span>";
+
+  var card = document.createElement("div");
+  card.className = "place-card";
+  card.id = id;
+  card.dataset.name = p.name;
+  card.innerHTML =
+    "<div class=\"pc-row1\">" +
+      "<div class=\"pc-name\">" + p.name + star + "</div>" +
+      "<div class=\"pc-meta\">" +
+        "<span class=\"pc-score\">" + p.score + "</span>" +
+        pill +
+      "</div>" +
+    "</div>" +
+    "<div style=\"display:flex;align-items:center;justify-content:space-between;gap:6px\">" +
+      "<div class=\"pc-who\">" + p.who + "</div>" +
+      "<button class=\"pc-toggle\" onclick=\"event.stopPropagation();toggleNote('" + id + "')\">ver mais ↓</button>" +
+    "</div>" +
+    "<div class=\"pc-note-wrap\" id=\"" + id + "-note\">" +
+      "<div class=\"pc-note\">" + p.note + "</div>" +
+      "<div class=\"pc-links\">" +
+        "<a class=\"directions-link\" href=\"" + dirUrl + "\" target=\"_blank\" onclick=\"event.stopPropagation()\">🧭 Como chegar</a>" +
+        "<a class=\"pc-link\" href=\"" + gmUrl + "\" target=\"_blank\" onclick=\"event.stopPropagation()\">Google Maps →</a>" +
+        siteLink +
+      "</div>" +
+    "</div>";
+  card.onclick = function() { focusPlace(p.name, p.lat, p.lng); };
+  return card.outerHTML;
+}
+function toggleNote(id) {
+  const wrap = document.getElementById(id + '-note');
+  const btn = document.querySelector('#' + id + ' .pc-toggle');
+  if (!wrap) return;
+  const isOpen = wrap.classList.toggle('open');
+  if (btn) btn.textContent = isOpen ? 'ver menos ↑' : 'ver mais ↓';
 }
 
 function focusPlace(name, lat, lng) {
@@ -543,15 +568,6 @@ function focusPlace(name, lat, lng) {
 function applyFilters() {
   renderMap(currentBairro);
   renderSidebar(currentBairro);
-}
-
-function switchBairro(id) {
-  currentBairro = id;
-  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.id === id));
-  const b = BAIRROS.find(x => x.id === id);
-  map.setView(b.center, b.zoom);
-  renderMap(id);
-  renderSidebar(id);
 }
 
 const PLACES = [
@@ -740,8 +756,6 @@ function showOverview() {
 }
 
 // Override switchBairro to clear polygons
-const _origSwitch = switchBairro;
-
 function switchBairro(id) {
   if (isOverview) {
     isOverview = false;
@@ -805,7 +819,7 @@ function locateMe() {
         className: '', iconSize: [14,14], iconAnchor: [7,7]
       });
       userMarker = L.marker([userLat, userLng], { icon: youIcon, zIndexOffset: 1000 }).addTo(map);
-      userMarker.bindPopup('<div style="font-family:'DM Sans',sans-serif;font-size:12px;color:#1C1916"><strong>Você está aqui</strong></div>');
+      userMarker.bindPopup("<div style='font-family:sans-serif;font-size:12px;color:#1C1916'><strong>Você está aqui</strong></div>");
 
       // Pan to user location
       map.setView([userLat, userLng], 16);

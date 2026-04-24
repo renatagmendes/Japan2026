@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kanazawa — Lua de Mel dos Gatos 🐱</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root { --cream:#f5f0e8;--warm-white:#faf8f4;--gold:#c9a96e;--gold-light:#e8d5b0;--dark:#1a1a18;--text:#3a3530;--text-light:#7a736a;--border:#e5ded4; }
+html,body{height:100%;margin:0;padding:0;}
+*,*::before,*::after{box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--warm-white);color:var(--text);display:flex;flex-direction:column;overflow:hidden;}
+header{background:var(--warm-white);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:52px;flex-shrink:0;}
+.logo{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;letter-spacing:0.05em;color:var(--dark);display:flex;align-items:center;gap:8px;}
+.nav-links{display:flex;gap:4px;}
+.nav-links a{font-size:12px;color:var(--text-light);text-decoration:none;padding:5px 10px;border-radius:20px;transition:all 0.2s;}
+.nav-links a:hover{background:var(--border);color:var(--text);}
+.nav-links a.active{background:var(--gold);color:white;}
+.city-bar{background:var(--warm-white);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;gap:8px;height:44px;flex-shrink:0;overflow-x:auto;scrollbar-width:none;}
+.city-bar::-webkit-scrollbar{display:none;}
+.city-label{font-size:10px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-light);white-space:nowrap;margin-right:4px;}
+.chip{padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:white;font-size:12px;color:var(--text);cursor:pointer;white-space:nowrap;transition:all 0.2s;font-family:'DM Sans',sans-serif;}
+.chip:hover{border-color:var(--gold);color:var(--gold);}
+.chip.active{background:var(--dark);color:var(--gold-light);border-color:var(--dark);}
+.chip.overview{background:var(--gold);color:white;border-color:var(--gold);font-weight:500;}
+.chip.overview.active{background:var(--dark);}
+.main{display:flex;flex:1;overflow:hidden;}
+.sidebar-wrap{position:relative;display:flex;}
+.sidebar{width:340px;min-width:340px;display:flex;flex-direction:column;border-right:1px solid var(--border);overflow:hidden;transition:min-width 0.3s,width 0.3s;}
+.sidebar.collapsed{width:0;min-width:0;border:none;}
+.toggle-btn{position:absolute;right:-18px;top:50%;transform:translateY(-50%);z-index:10;width:18px;height:44px;background:white;border:1px solid var(--border);border-left:none;border-radius:0 8px 8px 0;cursor:pointer;font-size:10px;color:var(--text-light);display:flex;align-items:center;justify-content:center;box-shadow:2px 0 6px rgba(0,0,0,0.06);}
+.oneday-banner{margin:12px 14px;padding:12px 14px;background:linear-gradient(135deg,#fef9f0,#fdf3e0);border:1px solid var(--gold-light);border-radius:10px;font-size:12px;line-height:1.6;color:var(--text);flex-shrink:0;}
+.oneday-banner strong{color:var(--gold);font-weight:500;display:block;margin-bottom:4px;font-family:'Cormorant Garamond',serif;font-size:14px;}
+.filters{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;gap:6px;flex-wrap:wrap;}
+select,.search-box{border:1px solid var(--border);border-radius:8px;background:white;font-size:12px;font-family:'DM Sans',sans-serif;color:var(--text);padding:6px 8px;}
+select{flex:1;min-width:100px;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%237a736a'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 6px center;padding-right:20px;}
+select:focus,.search-box:focus{outline:none;border-color:var(--gold);}
+.search-box{width:100%;padding-left:28px;background:white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a736a' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat 8px center;}
+.result-count{padding:5px 14px;font-size:11px;color:var(--text-light);border-bottom:1px solid var(--border);background:white;flex-shrink:0;}
+.search-results{display:none;flex-direction:column;overflow-y:auto;}
+.search-results.open{display:flex;}
+.sr-item{padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.15s;}
+.sr-item:hover{background:var(--cream);}
+.sr-name{font-size:13px;font-weight:500;margin-bottom:2px;}
+.sr-meta{font-size:11px;color:var(--text-light);display:flex;gap:8px;}
+.places-list{flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+.bairro-head{padding:14px 14px 6px;font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:300;color:var(--dark);}
+.bairro-desc{padding:0 14px 10px;font-size:11.5px;color:var(--text-light);line-height:1.6;border-bottom:1px solid var(--border);margin-bottom:4px;}
+.card{padding:9px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.15s;}
+.card:hover,.card.hi{background:var(--cream);}
+.card-row1{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;}
+.card-name{font-size:13px;font-weight:500;color:var(--dark);flex:1;}
+.card-score{font-size:11px;font-weight:500;color:var(--gold);white-space:nowrap;}
+.card-tags{display:flex;gap:5px;margin-top:4px;flex-wrap:wrap;align-items:center;}
+.tag{font-size:10px;padding:2px 7px;border-radius:10px;background:var(--cream);color:var(--text-light);}
+.tag.r{background:#fef3e8;color:#c07830;}.tag.b{background:#f0f0f8;color:#5050a0;}.tag.c{background:#eef5ee;color:#4a7a4a;}.tag.a{background:#fdf0f0;color:#a04040;}.tag.s{background:#f0f5fa;color:#304070;}
+.star{color:var(--gold);font-size:10px;margin-right:2px;}
+.expand-btn{font-size:11px;color:var(--gold);cursor:pointer;margin-top:5px;display:inline-block;}
+.card-detail{display:none;margin-top:7px;padding-top:7px;border-top:1px solid var(--border);font-size:12px;line-height:1.6;color:var(--text);}
+.card-detail.open{display:block;}
+.card-links{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
+.clink{font-size:11px;color:var(--gold);text-decoration:none;border:1px solid var(--gold-light);padding:3px 8px;border-radius:6px;transition:all 0.2s;}
+.clink:hover{background:var(--gold);color:white;}
+.map-area{flex:1;position:relative;overflow:hidden;background:#f0ede6;}
+#svgmap{width:100%;height:100%;cursor:grab;}
+#svgmap:active{cursor:grabbing;}
+.map-overlay{position:absolute;top:10px;right:10px;display:flex;flex-direction:column;gap:6px;z-index:10;}
+.map-btn{background:white;border:1px solid var(--border);border-radius:8px;padding:7px 12px;font-size:12px;font-family:'DM Sans',sans-serif;color:var(--text);cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.08);transition:all 0.2s;white-space:nowrap;}
+.map-btn:hover{border-color:var(--gold);color:var(--gold);}
+.map-tooltip{position:absolute;background:white;border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:12px;box-shadow:0 4px 16px rgba(0,0,0,0.12);pointer-events:none;display:none;z-index:20;max-width:220px;}
+.map-tooltip.show{display:block;}
+.tt-name{font-weight:500;font-size:13px;color:var(--dark);margin-bottom:3px;}
+.tt-meta{color:var(--text-light);font-size:11px;margin-bottom:6px;}
+.tt-links{display:flex;gap:5px;flex-wrap:wrap;pointer-events:all;}
+.tt-link{font-size:11px;color:var(--gold);text-decoration:none;border:1px solid var(--gold-light);padding:2px 7px;border-radius:5px;}
+.tt-link:hover{background:var(--gold);color:white;}
+@media(max-width:700px){
+  .sidebar{position:absolute;bottom:0;left:0;right:0;width:100%;min-width:100%;height:55%;border-right:none;border-top:1px solid var(--border);border-radius:14px 14px 0 0;z-index:100;transition:transform 0.3s;}
+  .sidebar.collapsed{transform:translateY(calc(100% - 40px));min-width:100%;}
+  .toggle-btn{display:none;}
+  .nav-links{display:none;}
+}
+</style>
+</head>
+<body>
+<header>
+  <div style="display:flex;align-items:center;gap:16px;">
+    <div class="logo">🐱 Lua de Mel dos Gatos</div>
+    <nav class="nav-links">
+      <a href="index.html">Reservas</a>
+      <a href="tokyo.html">Tokyo</a>
+      <a href="kyoto.html">Kyoto</a>
+      <a href="kanazawa.html" class="active">Kanazawa</a>
+    </nav>
+  </div>
+  <div style="font-size:11px;color:var(--text-light);font-style:italic;font-family:'Cormorant Garamond',serif;">1 dez – 2 dez · 1 dia</div>
+</header>
+<div class="city-bar">
+  <span class="city-label">Bairros</span>
+  <button class="chip overview active" id="chip-all" onclick="switchBairro('all',this)">🗾 Kanazawa</button>
+  <button class="chip" id="chip-higashi" onclick="switchBairro('higashi',this)">🏮 Higashi Chaya</button>
+  <button class="chip" id="chip-kenroku" onclick="switchBairro('kenroku',this)">🌿 Kenroku-en</button>
+  <button class="chip" id="chip-omicho" onclick="switchBairro('omicho',this)">🦀 Omicho Market</button>
+  <button class="chip" id="chip-katamachi" onclick="switchBairro('katamachi',this)">🍸 Katamachi</button>
+</div>
+<div class="main">
+  <div class="sidebar-wrap">
+    <div class="sidebar" id="sidebar">
+      <div class="oneday-banner">
+        <strong>☝ So 1 dia em Kanazawa</strong>
+        A cidade tem um ritmo diferente — mais lenta, mais intima, a "Kyoto das costas do Japao." Priorize Kenroku-en + Higashi Chaya pela manha e Omicho Market no almoco (dezembro = temporada de caranguejo-da-neve). Tarde livre em Katamachi.
+      </div>
+      <div class="filters">
+        <input class="search-box" type="text" placeholder="Buscar lugar..." id="searchBox" oninput="doSearch(this.value)">
+        <select id="catF" onchange="render()">
+          <option value="">Todas as categorias</option>
+          <option value="r">Restaurante</option>
+          <option value="b">Bar</option>
+          <option value="c">Cafe</option>
+          <option value="a">Atividade</option>
+          <option value="s">Shopping</option>
+        </select>
+      </div>
+      <div class="result-count" id="rc"></div>
+      <div class="search-results" id="sr"></div>
+      <div class="places-list" id="pl"></div>
+    </div>
+    <div class="toggle-btn" id="tog" onclick="toggleSidebar()">&#8249;</div>
+  </div>
+  <div class="map-area" id="mapArea">
+    <svg id="svgmap" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet">
+      <rect width="800" height="600" fill="#ede8df"/>
+      <path d="M 300 0 Q 310 150 305 300 Q 300 450 295 600" stroke="#b8d4e8" stroke-width="5" fill="none" opacity="0.5"/>
+      <path d="M 500 0 Q 510 150 505 300 Q 500 450 495 600" stroke="#b8d4e8" stroke-width="4" fill="none" opacity="0.4"/>
+      <g stroke="#d8d0c4" stroke-width="0.8" opacity="0.4">
+        <line x1="0" y1="150" x2="800" y2="150"/>
+        <line x1="0" y1="300" x2="800" y2="300"/>
+        <line x1="0" y1="450" x2="800" y2="450"/>
+        <line x1="200" y1="0" x2="200" y2="600"/>
+        <line x1="400" y1="0" x2="400" y2="600"/>
+        <line x1="600" y1="0" x2="600" y2="600"/>
+      </g>
+      <g id="zones"></g>
+      <g id="pins"></g>
+    </svg>
+    <div class="map-overlay">
+      <button class="map-btn" onclick="switchBairro('all',document.getElementById('chip-all'))">🗾 Ver todos</button>
+      <button class="map-btn" onclick="window.open('https://www.google.com/maps/search/Kanazawa','_blank')">📍 Google Maps</button>
+    </div>
+    <div class="map-tooltip" id="tooltip">
+      <div class="tt-name" id="tt-name"></div>
+      <div class="tt-meta" id="tt-meta"></div>
+      <div class="tt-links" id="tt-links"></div>
+    </div>
+  </div>
+</div>
+<script>
+var LAT_MIN=36.540,LAT_MAX=36.600,LNG_MIN=136.625,LNG_MAX=136.695;
+function latToY(lat){return 600-((lat-LAT_MIN)/(LAT_MAX-LAT_MIN))*600;}
+function lngToX(lng){return ((lng-LNG_MIN)/(LNG_MAX-LNG_MIN))*800;}
+
+var BAIRROS={
+  higashi:{label:"Higashi Chaya",emoji:"🏮",color:"#c0392b",desc:"O distrito de casas de cha mais preservado de Kanazawa — construido em 1820. Menor e mais intimo que Gion em Kyoto, sem multidoes. Lojas de ouro artesanal (kinpaku) espalhadas pelas ruelas de pedra.",bounds:[36.578,136.660,36.572,136.668]},
+  kenroku:{label:"Kenroku-en",emoji:"🌿",color:"#27ae60",desc:"Um dos tres jardins mais bonitos do Japao. Em dezembro tem yukitsuri — estruturas de bambu que sustentam os galhos dos pinheiros para proteger da neve. Imagem unica. O Castelo de Kanazawa fica ao lado.",bounds:[36.564,136.655,36.556,136.668]},
+  omicho:{label:"Omicho Market",emoji:"🦀",color:"#e67e22",desc:"O mercado de frutos do mar mais famoso de Kanazawa, desde 1721. Em dezembro e temporada de zuwaigani (caranguejo-da-neve) — o melhor do ano. Come-se cru, cozido ou grelhado nos restaurantes dentro do mercado.",bounds:[36.572,136.648,36.566,136.657]},
+  katamachi:{label:"Katamachi",emoji:"🍸",color:"#8e44ad",desc:"Area de bares e izakayas de Kanazawa. Mais local e menos turistico. Sake de Kanazawa e considerado excelente — agua da neve das montanhas. Boa para terminar o dia com um drinque local.",bounds:[36.562,136.649,36.556,136.659]},
+};
+
+var PLACES=[
+  {id:"k1",name:"Higashi Chaya District",bairro:"higashi",cat:"a",catL:"Atividade",score:4.8,sl:true,when:"Manha cedo",note:"O distrito mais intacto de Kanazawa. Passeio a pe pelas ruelas de pedra no inicio da manha — a luz da manha e linda aqui.",gmaps:"https://maps.google.com/?q=Higashi+Chaya+District+Kanazawa",url:"",lat:36.5758,lng:136.6638},
+  {id:"k2",name:"Hakuichi (ouro artesanal)",bairro:"higashi",cat:"s",catL:"Shopping",score:4.2,sl:false,when:"Manha ou tarde",note:"Kanazawa e responsavel por 99% do ouro em folha (kinpaku) do Japao. Hakuichi tem softwear de ouro, espelhos, caixas lacadas. Produto local muito especial.",gmaps:"https://maps.google.com/?q=Hakuichi+Kanazawa",url:"https://www.hakuichi.co.jp/en/",lat:36.5755,lng:136.6650},
+  {id:"k3",name:"Kaikaro Ochaya",bairro:"higashi",cat:"a",catL:"Atividade",score:4.4,sl:false,when:"Manha",note:"Casa de cha historica aberta ao publico. Interior de uma ochaya preservado do seculo 19. Vende wagashi (doces japoneses) tipicos.",gmaps:"https://maps.google.com/?q=Kaikaro+Kanazawa",url:"",lat:36.5762,lng:136.6640},
+  {id:"k4",name:"Kenroku-en Garden",bairro:"kenroku",cat:"a",catL:"Atividade",score:4.9,sl:true,when:"Manha",note:"Um dos tres jardins mais bonitos do Japao. Em dezembro tem yukitsuri — estruturas de bambu que sustentam galhos dos pinheiros contra a neve. Imagem unica. Ir cedo.",gmaps:"https://maps.google.com/?q=Kenroku-en+Kanazawa",url:"https://kenrokuen.or.jp/en/",lat:36.5608,lng:136.6617},
+  {id:"k5",name:"Kanazawa Castle",bairro:"kenroku",cat:"a",catL:"Atividade",score:4.3,sl:false,when:"Manha",note:"Parcialmente reconstruido mas com jardins impecaveis. Fica ao lado do Kenroku-en — natural fazer os dois juntos.",gmaps:"https://maps.google.com/?q=Kanazawa+Castle",url:"",lat:36.5612,lng:136.6595},
+  {id:"k6",name:"21st Century Museum",bairro:"kenroku",cat:"a",catL:"Atividade",score:4.4,sl:true,when:"Tarde",note:"Museu de arte contemporanea em formato circular (SANAA). A obra Swimming Pool de Leandro Erlich e a mais famosa — voce parece estar nadando dentro do vidro.",gmaps:"https://maps.google.com/?q=21st+Century+Museum+Kanazawa",url:"https://www.kanazawa21.jp/en/",lat:36.5613,lng:136.6563},
+  {id:"k7",name:"Omicho Market",bairro:"omicho",cat:"a",catL:"Atividade",score:4.9,sl:true,when:"Almoco",note:"O coracao gastronomico de Kanazawa desde 1721. Em dezembro e temporada de zuwaigani (caranguejo-da-neve). Dezenas de bancas de frutos do mar e restaurantes dentro do mercado.",gmaps:"https://maps.google.com/?q=Omicho+Market+Kanazawa",url:"",lat:36.5693,lng:136.6523},
+  {id:"k8",name:"Caranguejo no Omicho",bairro:"omicho",cat:"r",catL:"Restaurante",score:4.7,sl:true,when:"Almoco",note:"Nao ha um restaurante especifico — a pratica e passear pelo mercado e entrar em algum com caranguejo fresco exposto. Peca zuwaigani cozido ou grelhado. Perguntar sobre alergia a crustaceo.",gmaps:"https://maps.google.com/?q=Omicho+Market+seafood+Kanazawa",url:"",lat:36.5690,lng:136.6519},
+  {id:"k9",name:"Kinuya (kaisendon)",bairro:"omicho",cat:"r",catL:"Restaurante",score:4.5,sl:false,when:"Almoco",note:"Um dos restaurantes mais conhecidos dentro do Omicho — serve kaisendon (tigela de sashimi sobre arroz). Pode ter fila.",gmaps:"https://maps.google.com/?q=Kinuya+Kanazawa+Omicho",url:"",lat:36.5695,lng:136.6527},
+  {id:"k10",name:"Katamachi (bares)",bairro:"katamachi",cat:"b",catL:"Bar",score:4.3,sl:true,when:"Noite",note:"Area de bares e izakayas de Kanazawa. Mais local e menos turistico. Boa para uma ultima noite com sake local — a agua das montanhas deixa o sake da regiao muito especial.",gmaps:"https://maps.google.com/?q=Katamachi+Kanazawa+bars",url:"",lat:36.5600,lng:136.6547},
+  {id:"k11",name:"Fukumitsuya Sake",bairro:"katamachi",cat:"b",catL:"Bar",score:4.4,sl:true,when:"Noite",note:"Kanazawa tem varias destilarias de sake famosas. Fukumitsuya e a mais antiga (1623). Vale pedir sake local em qualquer bar da area e perguntar sobre os rotulos da regiao Noto.",gmaps:"https://maps.google.com/?q=Fukumitsuya+sake+Kanazawa",url:"https://www.fukumitsuya.co.jp/en/",lat:36.5596,lng:136.6540},
+  {id:"k12",name:"Nomura Samurai House",bairro:"higashi",cat:"a",catL:"Atividade",score:4.2,sl:false,when:"Manha ou tarde",note:"Casa samurai do seculo 17 preservada no distrito de Nagamachi. Complemento cultural perfeito se sobrar tempo.",gmaps:"https://maps.google.com/?q=Nomura+Samurai+House+Kanazawa",url:"",lat:36.5655,lng:136.6500},
+];
+
+var curBairro="all",sidebarOpen=true;
+
+function getFiltered(){
+  var cat=document.getElementById("catF").value;
+  return PLACES.filter(function(p){
+    var bOk=curBairro==="all"||p.bairro===curBairro;
+    var cOk=!cat||p.cat===cat;
+    return bOk&&cOk;
+  });
+}
+
+function render(){
+  var filtered=getFiltered();
+  document.getElementById("rc").textContent=filtered.length+" lugares";
+  var b=BAIRROS[curBairro];
+  var html="";
+  if(b){html+='<div class="bairro-head">'+b.emoji+" "+b.label+"</div>"+'<div class="bairro-desc">'+b.desc+"</div>";}
+  filtered.forEach(function(p){html+=buildCard(p);});
+  document.getElementById("pl").innerHTML=html;
+  renderPins(filtered);
+}
+
+function buildCard(p){
+  var star=p.sl?'<span class="star">✦</span>':"";
+  var links='<a class="clink" href="'+p.gmaps+'" target="_blank">Google Maps</a>';
+  if(p.url) links+=' <a class="clink" href="'+p.url+'" target="_blank">Site oficial</a>';
+  var nav="https://www.google.com/maps/dir/Current+Location/"+encodeURIComponent(p.name+" Kanazawa");
+  links+=' <a class="clink" href="'+nav+'" target="_blank">Como chegar</a>';
+  return '<div class="card" id="card-'+p.id+'" onclick="focusPin(\''+p.id+'\')">'+
+    '<div class="card-row1"><div class="card-name">'+star+p.name+'</div><div class="card-score">'+p.score+'★</div></div>'+
+    '<div class="card-tags"><span class="tag '+p.cat+'">'+p.catL+'</span>'+(p.when?'<span class="tag">'+p.when+'</span>':'')+
+    '</div><span class="expand-btn" onclick="event.stopPropagation();toggleDetail(\''+p.id+'\',this)">ver mais ↓</span>'+
+    '<div class="card-detail" id="det-'+p.id+'"><div>'+p.note+'</div><div class="card-links">'+links+'</div></div></div>';
+}
+
+function toggleDetail(id,btn){
+  var d=document.getElementById("det-"+id);
+  d.classList.toggle("open");
+  btn.textContent=d.classList.contains("open")?"ver menos ↑":"ver mais ↓";
+}
+
+var CAT_COLORS={r:"#c07830",b:"#5050a0",c:"#4a7a4a",a:"#a04040",s:"#304070"};
+
+function renderPins(places){
+  var g=document.getElementById("pins");
+  g.innerHTML="";
+  places.forEach(function(p){
+    var x=lngToX(p.lng),y=latToY(p.lat);
+    if(x<0||x>800||y<0||y>600)return;
+    var col=p.sl?"#c9a96e":CAT_COLORS[p.cat]||"#7a736a";
+    var em={r:"🍽",b:"🍸",c:"☕",a:"⛩",s:"🛍"}[p.cat]||"📍";
+    var pin=document.createElementNS("http://www.w3.org/2000/svg","g");
+    pin.setAttribute("transform","translate("+x+","+y+")");
+    pin.setAttribute("cursor","pointer");
+    var circ=document.createElementNS("http://www.w3.org/2000/svg","circle");
+    circ.setAttribute("r","12");circ.setAttribute("fill",col);circ.setAttribute("stroke","white");circ.setAttribute("stroke-width","2");
+    pin.appendChild(circ);
+    var txt=document.createElementNS("http://www.w3.org/2000/svg","text");
+    txt.setAttribute("text-anchor","middle");txt.setAttribute("dominant-baseline","central");txt.setAttribute("font-size","10");
+    txt.textContent=em;pin.appendChild(txt);
+    pin.addEventListener("click",function(e){e.stopPropagation();showTooltip(p,x,y);highlightCard(p.id);});
+    g.appendChild(pin);
+  });
+}
+
+function showTooltip(p,x,y){
+  var tt=document.getElementById("tooltip");
+  document.getElementById("tt-name").textContent=(p.sl?"✦ ":"")+p.name;
+  document.getElementById("tt-meta").textContent=p.catL+(p.when?" · "+p.when:"");
+  var nav="https://www.google.com/maps/dir/Current+Location/"+encodeURIComponent(p.name+" Kanazawa");
+  var links='<a class="tt-link" href="'+p.gmaps+'" target="_blank">Google Maps</a>';
+  if(p.url)links+=' <a class="tt-link" href="'+p.url+'" target="_blank">Site</a>';
+  links+=' <a class="tt-link" href="'+nav+'" target="_blank">Como chegar</a>';
+  document.getElementById("tt-links").innerHTML=links;
+  var ma=document.getElementById("mapArea");
+  var svg=document.getElementById("svgmap");
+  var svgRect=svg.getBoundingClientRect();
+  var scaleX=svgRect.width/800,scaleY=svgRect.height/600;
+  var px=x*scaleX+14,py=y*scaleY-60;
+  if(px+220>ma.clientWidth)px=x*scaleX-220;
+  if(py<10)py=y*scaleY+20;
+  tt.style.left=px+"px";tt.style.top=py+"px";
+  tt.classList.add("show");
+}
+
+document.getElementById("mapArea").addEventListener("click",function(){document.getElementById("tooltip").classList.remove("show");});
+
+function focusPin(id){
+  var p=PLACES.find(function(x){return x.id===id;});
+  if(!p)return;
+  highlightCard(id);
+  var x=lngToX(p.lng),y=latToY(p.lat);
+  if(x>=0&&x<=800&&y>=0&&y<=600)showTooltip(p,x,y);
+}
+
+function highlightCard(id){
+  document.querySelectorAll(".card").forEach(function(c){c.classList.remove("hi");});
+  var card=document.getElementById("card-"+id);
+  if(card){card.classList.add("hi");card.scrollIntoView({behavior:"smooth",block:"nearest"});}
+}
+
+function drawZones(){
+  var g=document.getElementById("zones");
+  g.innerHTML="";
+  Object.keys(BAIRROS).forEach(function(key){
+    var b=BAIRROS[key];
+    var bounds=b.bounds;
+    var x1=lngToX(bounds[1]),y1=latToY(bounds[0]);
+    var x2=lngToX(bounds[3]),y2=latToY(bounds[2]);
+    if(x2<0||x1>800||y2<0||y1>600)return;
+    var rect=document.createElementNS("http://www.w3.org/2000/svg","rect");
+    rect.setAttribute("x",Math.max(0,x1));rect.setAttribute("y",Math.max(0,y1));
+    rect.setAttribute("width",Math.min(800,x2)-Math.max(0,x1));rect.setAttribute("height",Math.min(600,y2)-Math.max(0,y1));
+    rect.setAttribute("fill",b.color);rect.setAttribute("fill-opacity","0.1");
+    rect.setAttribute("stroke",b.color);rect.setAttribute("stroke-width","1.5");rect.setAttribute("stroke-opacity","0.5");
+    g.appendChild(rect);
+    var lx=(Math.max(0,x1)+Math.min(800,x2))/2,ly=Math.max(0,y1)+14;
+    var label=document.createElementNS("http://www.w3.org/2000/svg","text");
+    label.setAttribute("x",lx);label.setAttribute("y",ly);label.setAttribute("text-anchor","middle");
+    label.setAttribute("font-size","9");label.setAttribute("fill",b.color);label.setAttribute("font-family","DM Sans,sans-serif");label.setAttribute("opacity","0.8");
+    label.textContent=b.emoji+" "+b.label;g.appendChild(label);
+  });
+}
+
+function switchBairro(key,el){
+  curBairro=key;
+  document.querySelectorAll(".chip").forEach(function(c){c.classList.remove("active");});
+  if(el)el.classList.add("active");
+  render();drawZones();
+}
+
+function doSearch(val){
+  var sr=document.getElementById("sr");
+  if(!val.trim()){sr.classList.remove("open");return;}
+  var q=val.toLowerCase();
+  var found=PLACES.filter(function(p){return p.name.toLowerCase().indexOf(q)>=0||p.note.toLowerCase().indexOf(q)>=0||p.catL.toLowerCase().indexOf(q)>=0;});
+  sr.innerHTML=found.map(function(p){
+    return '<div class="sr-item" onclick="goSearch(\''+p.id+'\')"><div class="sr-name">'+(p.sl?"✦ ":"")+p.name+'</div><div class="sr-meta"><span>'+p.catL+'</span><span>'+BAIRROS[p.bairro].label+'</span><span>'+p.score+'★</span></div></div>';
+  }).join("")||'<div style="padding:12px 14px;font-size:12px;color:var(--text-light);">Nenhum resultado.</div>';
+  sr.classList.add("open");
+}
+
+function goSearch(id){
+  document.getElementById("searchBox").value="";
+  document.getElementById("sr").classList.remove("open");
+  var p=PLACES.find(function(x){return x.id===id;});
+  if(!p)return;
+  switchBairro(p.bairro,document.getElementById("chip-"+p.bairro));
+  setTimeout(function(){focusPin(id);},100);
+}
+
+function toggleSidebar(){
+  sidebarOpen=!sidebarOpen;
+  document.getElementById("sidebar").classList.toggle("collapsed",!sidebarOpen);
+  document.getElementById("tog").innerHTML=sidebarOpen?"&#8249;":"&#8250;";
+}
+
+drawZones();render();
+</script>
+</body>
+</html>

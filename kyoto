@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kyoto — Lua de Mel dos Gatos 🐱</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  :root {
+    --cream: #f5f0e8;
+    --warm-white: #faf8f4;
+    --gold: #c9a96e;
+    --gold-light: #e8d5b0;
+    --dark: #1a1a18;
+    --text: #3a3530;
+    --text-light: #7a736a;
+    --border: #e5ded4;
+    --cat-red: #c0392b;
+  }
+
+  html, body { height: 100%; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--warm-white);
+    color: var(--text);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    flex-shrink: 0;
+    z-index: 100;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 4px;
+  }
+
+  .nav-links a {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text-light);
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 20px;
+    transition: all 0.2s;
+    letter-spacing: 0.02em;
+  }
+
+  .nav-links a:hover { background: var(--border); color: var(--text); }
+  .nav-links a.active { background: var(--gold); color: white; }
+
+  .logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .logo span { font-size: 16px; }
+
+  /* CITY CHIPS */
+  .city-bar {
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 44px;
+    flex-shrink: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .city-bar::-webkit-scrollbar { display: none; }
+
+  .city-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    white-space: nowrap;
+    margin-right: 4px;
+  }
+
+  .chip {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: white;
+    font-size: 12px;
+    color: var(--text);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .chip:hover { border-color: var(--gold); color: var(--gold); }
+  .chip.active { background: var(--dark); color: var(--gold-light); border-color: var(--dark); }
+  .chip.overview { background: var(--gold); color: white; border-color: var(--gold); font-weight: 500; }
+  .chip.overview.active { background: var(--dark); }
+
+  /* MAIN LAYOUT */
+  .main {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 360px;
+    background: var(--warm-white);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    transition: width 0.3s ease;
+    overflow: hidden;
+  }
+
+  .sidebar.collapsed { width: 0; border: none; }
+
+  /* Toggle button */
+  .sidebar-toggle {
+    position: absolute;
+    left: 360px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 48px;
+    background: white;
+    border: 1px solid var(--border);
+    border-left: none;
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: var(--text-light);
+    z-index: 500;
+    transition: left 0.3s ease;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.06);
+  }
+  .sidebar-toggle.collapsed { left: 0; }
+
+  /* Filters */
+  .filters {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .filter-select {
+    flex: 1;
+    min-width: 120px;
+    padding: 7px 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: white;
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%237a736a'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    padding-right: 24px;
+  }
+
+  .search-box {
+    width: 100%;
+    padding: 7px 10px 7px 30px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='%237a736a' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat 9px center;
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+  }
+
+  .search-box:focus, .filter-select:focus { outline: none; border-color: var(--gold); }
+
+  /* Search results */
+  .search-results {
+    display: none;
+    flex-direction: column;
+    overflow-y: auto;
+    flex: 1;
+  }
+  .search-results.visible { display: flex; }
+
+  .search-result-item {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .search-result-item:hover { background: var(--cream); }
+
+  .result-name { font-size: 13px; font-weight: 500; margin-bottom: 3px; }
+  .result-meta { font-size: 11px; color: var(--text-light); display: flex; gap: 8px; flex-wrap: wrap; }
+
+  /* Places list */
+  .places-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  .bairro-header {
+    padding: 16px 16px 8px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 300;
+    color: var(--dark);
+    letter-spacing: 0.03em;
+  }
+
+  .bairro-desc {
+    padding: 0 16px 12px;
+    font-size: 12px;
+    color: var(--text-light);
+    line-height: 1.6;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 4px;
+  }
+
+  .place-card {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .place-card:hover { background: var(--cream); }
+  .place-card:last-child { border-bottom: none; }
+
+  .card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .card-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex: 1;
+  }
+
+  .shortlist-star { color: var(--gold); font-size: 11px; }
+
+  .card-score {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--gold);
+    white-space: nowrap;
+  }
+
+  .card-meta {
+    display: flex;
+    gap: 6px;
+    margin-top: 4px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .tag {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 10px;
+    background: var(--cream);
+    color: var(--text-light);
+    letter-spacing: 0.02em;
+  }
+
+  .tag.cat-restaurant { background: #fef3e8; color: #c07830; }
+  .tag.cat-bar { background: #f0f0f8; color: #5050a0; }
+  .tag.cat-cafe { background: #eef5ee; color: #4a7a4a; }
+  .tag.cat-activity { background: #fdf0f0; color: #a04040; }
+  .tag.cat-shopping { background: #f0f5fa; color: #304070; }
+
+  .source-tag {
+    font-size: 10px;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .card-expand {
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--gold);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    user-select: none;
+  }
+
+  .card-details {
+    display: none;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
+
+  .card-details.open { display: block; }
+
+  .card-note {
+    font-size: 12px;
+    color: var(--text);
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+
+  .card-links {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .card-link {
+    font-size: 11px;
+    color: var(--gold);
+    text-decoration: none;
+    border: 1px solid var(--gold-light);
+    padding: 3px 8px;
+    border-radius: 6px;
+    transition: all 0.2s;
+  }
+  .card-link:hover { background: var(--gold); color: white; }
+
+  /* MAP */
+  .map-area {
+    flex: 1;
+    position: relative;
+  }
+
+  #map { width: 100%; height: 100%; }
+
+  .map-btn {
+    position: absolute;
+    z-index: 500;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .map-btn:hover { border-color: var(--gold); color: var(--gold); }
+  #overviewBtn { top: 12px; right: 12px; }
+  #locateBtn { bottom: 28px; right: 12px; }
+
+  /* RESULT COUNT */
+  .result-count {
+    padding: 6px 16px;
+    font-size: 11px;
+    color: var(--text-light);
+    border-bottom: 1px solid var(--border);
+    background: white;
+  }
+
+  /* MOBILE */
+  @media (max-width: 768px) {
+    body { overflow: hidden; }
+    .sidebar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100% !important;
+      height: 60%;
+      border-right: none;
+      border-top: 1px solid var(--border);
+      border-radius: 16px 16px 0 0;
+      z-index: 400;
+      transition: transform 0.3s ease;
+      transform: translateY(0);
+    }
+    .sidebar.collapsed { transform: translateY(calc(100% - 44px)); width: 100% !important; border: none; border-top: 1px solid var(--border); }
+    .sidebar-toggle { display: none; }
+    .map-area { height: 100%; }
+    .main { position: relative; }
+
+    .bottom-handle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 36px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .bottom-handle::before {
+      content: '';
+      width: 36px;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+    }
+
+    .header-left .nav-links { display: none; }
+    .city-bar { padding: 0 12px; }
+  }
+
+  @media (min-width: 769px) {
+    .bottom-handle { display: none; }
+  }
+
+  /* POPUP */
+  .leaflet-popup-content-wrapper {
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+    border: 1px solid var(--border);
+    font-family: 'DM Sans', sans-serif;
+  }
+  .leaflet-popup-content { margin: 12px 14px; }
+  .popup-name { font-size: 13px; font-weight: 500; color: var(--dark); margin-bottom: 4px; }
+  .popup-meta { font-size: 11px; color: var(--text-light); margin-bottom: 6px; }
+  .popup-links { display: flex; gap: 6px; flex-wrap: wrap; }
+  .popup-link { font-size: 11px; color: var(--gold); text-decoration: none; border: 1px solid var(--gold-light); padding: 2px 7px; border-radius: 5px; }
+  .popup-link:hover { background: var(--gold); color: white; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <div class="logo"><span>🐱</span> Lua de Mel dos Gatos</div>
+    <nav class="nav-links">
+      <a href="index.html">Reservas</a>
+      <a href="tokyo.html">Tokyo</a>
+      <a href="kyoto.html" class="active">Kyoto</a>
+      <a href="kanazawa.html">Kanazawa</a>
+    </nav>
+  </div>
+  <div style="font-size:11px;color:var(--text-light);font-style:italic;font-family:'Cormorant Garamond',serif;">2 dez – 6 dez</div>
+</header>
+
+<div class="city-bar">
+  <span class="city-label">Bairros</span>
+  <button class="chip overview active" onclick="showOverview(this)">🗾 Kyoto</button>
+  <button class="chip" onclick="switchBairro('gion', this)">🏮 Gion · Higashiyama</button>
+  <button class="chip" onclick="switchBairro('arashiyama', this)">🎋 Arashiyama</button>
+  <button class="chip" onclick="switchBairro('pontoche', this)">🍶 Ponto-Cho</button>
+  <button class="chip" onclick="switchBairro('fushimi', this)">⛩ Fushimi · Nara</button>
+  <button class="chip" onclick="switchBairro('shimogamo', this)">📚 Shimogamo · Okazaki</button>
+  <button class="chip" onclick="switchBairro('nijo', this)">🏯 Nijo · Centro</button>
+</div>
+
+<div class="main">
+  <div class="sidebar" id="sidebar">
+    <div class="bottom-handle" onclick="toggleMobileSidebar()"></div>
+
+    <div class="filters">
+      <input class="search-box" type="text" placeholder="Buscar lugar..." id="searchBox" oninput="handleSearch(this.value)">
+      <select class="filter-select" id="catFilter" onchange="applyFilters()">
+        <option value="">Todas as categorias</option>
+        <option value="restaurant">Restaurante</option>
+        <option value="bar">Bar</option>
+        <option value="cafe">Café</option>
+        <option value="activity">Atividade</option>
+        <option value="shopping">Shopping</option>
+      </select>
+      <select class="filter-select" id="sourceFilter" onchange="applyFilters()">
+        <option value="">Todas as fontes</option>
+        <option value="Fernanda">Fernanda</option>
+        <option value="Pika">Pika</option>
+        <option value="Mari">Mari</option>
+        <option value="Juliana">Juliana</option>
+        <option value="Multi">Multi-recomendado</option>
+      </select>
+    </div>
+
+    <div id="searchResults" class="search-results"></div>
+
+    <div class="result-count" id="resultCount"></div>
+
+    <div class="places-list" id="placesList"></div>
+  </div>
+
+  <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">‹</button>
+
+  <div class="map-area">
+    <div id="map"></div>
+    <button class="map-btn" id="overviewBtn" onclick="showOverview(null)">🗾 Ver todos os bairros</button>
+    <button class="map-btn" id="locateBtn" onclick="locateMe()">📍 Minha localização</button>
+  </div>
+</div>
+
+<script>
+// =====================
+// DATA
+// =====================
+const BAIRROS = {
+  gion: {
+    label: "Gion · Higashiyama",
+    emoji: "🏮",
+    desc: "O coração histórico de Kyoto. Ruas de pedra, casas de chá, lojas de artesanato — e onde é mais provável avistar uma gueixa à tarde. Sanneizaka e Ninneizaka são as ruelas mais bonitas da cidade. Fernanda passou horas aqui e não se arrependeu.",
+    center: [35.0034, 135.7788],
+    zoom: 15,
+    color: "#c0392b",
+  },
+  arashiyama: {
+    label: "Arashiyama",
+    emoji: "🎋",
+    desc: "Bairro de tirar o fôlego: bamboo forest, templos cobertos de névoa, o Rio Oi e a ponte Togetsukyo. Fernanda disse que o Tenryu-ji com névoa de cerejeiras e montanhas atrás foi um dos momentos mais bonitos da viagem. Mais gostoso do que parece no Google.",
+    center: [35.0094, 135.6729],
+    zoom: 15,
+    color: "#27ae60",
+  },
+  pontoche: {
+    label: "Ponto-Cho",
+    emoji: "🍶",
+    desc: "Uma ruela estreita paralela ao Rio Kamo — cheia de restaurantes, izakayas e bares. Noite perfeita para passear sem reserva, entrar num bar bonito e terminar num drinque. Beatlemomo speakeasy de vinil fica aqui. Fernanda disse: 'vale super a pena passear por lá.'",
+    center: [35.0063, 135.7708],
+    zoom: 16,
+    color: "#8e44ad",
+  },
+  fushimi: {
+    label: "Fushimi · Nara",
+    emoji: "⛩",
+    desc: "Fushimi Inari são os famosos portões vermelhos infinitos — um dos lugares mais icônicos do Japão. Nara fica a 45min e tem cervos livres no parque e o maior buda de bronze do mundo no Todaiji. Fernanda fez os dois no mesmo dia e foi memorável.",
+    center: [34.9671, 135.7727],
+    zoom: 14,
+    color: "#e67e22",
+  },
+  shimogamo: {
+    label: "Shimogamo · Okazaki",
+    emoji: "📚",
+    desc: "Área do Philosophers Path e do Silver Pavilion (Ginkaku-ji). Passeio mais contemplativo e menos turístico. BAL é uma loja de departamento lindíssima que Fernanda amou, com livraria e stationery no subsolo. Matcha no Ippodo (mas Fernanda não gostou de matcha).",
+    center: [35.0268, 135.7826],
+    zoom: 15,
+    color: "#16a085",
+  },
+  nijo: {
+    label: "Nijo · Centro",
+    emoji: "🏯",
+    desc: "Nijo Castle e o Sento Imperial Palace ficam aqui. Fernanda disse que Nijo vale super a pena — o assoalho canta para alertar sobre invasores. Área mais tranquila, boa para uma manhã antes de se deslocar para outra parte da cidade.",
+    center: [35.0142, 135.7487],
+    zoom: 15,
+    color: "#2980b9",
+  },
+};
+
+const PLACES = [
+  // GION · HIGASHIYAMA
+  {id:"p1", name:"Sushi Saeki", bairro:"gion", cat:"restaurant", catLabel:"Restaurante", source:"Fernanda", score:5.0, shortlist:true,
+   note:"O melhor omakase da viagem da Fernanda — serviço impecável e mais descontraído que o Fukuzuka. Ambiente acolhedor, chef atento. Precisa reservar com meses de antecedência.",
+   when:"Jantar", gmaps:"https://maps.google.com/?q=Sushi+Saeki+Kyoto", url:"https://omakase.in/en"},
+  {id:"p2", name:"Yakiniku Yasawa", bairro:"gion", cat:"restaurant", catLabel:"Restaurante", source:"Fernanda", score:4.6, shortlist:true,
+   note:"Yakiniku de wagyu — churrasco japonês na brasa. Fernanda achou delicioso. Ótima opção para um jantar mais casual mas de qualidade.",
+   when:"Jantar", gmaps:"https://maps.google.com/?q=Yakiniku+Yasawa+Kyoto", url:""},
+  {id:"p3", name:"Sushi Fukuzuka", bairro:"gion", cat:"restaurant", catLabel:"Restaurante", source:"Fernanda+Juliana", score:4.8, shortlist:true,
+   note:"Fernanda amou — mais formal e técnico que o Saeki. Juliana colocou como top 3 da vida. Precisa reservar. Avisar sobre alergia a crustáceo.",
+   when:"Jantar", gmaps:"https://maps.google.com/?q=Sushi+Fukuzuka+Kyoto", url:"https://omakase.in/en"},
+  {id:"p4", name:"Izakaya Komedokoro Inamoto", bairro:"gion", cat:"restaurant", catLabel:"Restaurante", source:"Fernanda", score:4.5, shortlist:true,
+   note:"Bib Gourmand Michelin. Fernanda adorou — muito local, menu em japonês, só tinha japoneses quando ela foi. Uma gueixa entrou e jantou na mesa ao lado. Experiência surreal.",
+   when:"Jantar", gmaps:"https://maps.google.com/?q=Komedokoro+Inamoto+Kyoto", url:""},
+  {id:"p5", name:"Sanneizaka · Ninneizaka", bairro:"gion", cat:"activity", catLabel:"Atividade", source:"Fernanda", score:4.8, shortlist:true,
+   note:"Ruelas de pedra históricas. Fernanda comeu rice cakes com yuzu (muito bom!) e hambúrguer de arroz com wagyu. Café 100% Arabica fica no caminho.",
+   when:"Manhã ou tarde", gmaps:"https://maps.google.com/?q=Sanneizaka+Kyoto", url:""},
+  {id:"p6", name:"Yasaka Pagoda", bairro:"gion", cat:"activity", catLabel:"Atividade", source:"Fernanda", score:4.5, shortlist:false,
+   note:"Vista icônica de Kyoto. Melhor visitada de manhã cedo ou ao entardecer para evitar multidões.",
+   when:"Manhã", gmaps:"https://maps.google.com/?q=Yasaka+Pagoda+Kyoto", url:""},
+  {id:"p7", name:"Kiyomizudera", bairro:"gion", cat:"activity", catLabel:"Atividade", source:"Fernanda", score:4.5, shortlist:false,
+   note:"Templo sobre a montanha com vista de Kyoto. Fernanda visitou — vale a pena mas vai cedo.",
+   when:"Manhã", gmaps:"https://maps.google.com/?q=Kiyomizudera+Kyoto", url:"https://www.kiyomizudera.or.jp/en/"},
+  {id:"p8", name:"Gion Geisha District", bairro:"gion", cat:"activity", catLabel:"Atividade", source:"Fernanda", score:4.7, shortlist:true,
+   note:"Fernanda passou a tarde aqui e viu uma gueixa no Inamoto. Melhor horário: entardecer entre 17h-19h. Paciência e silêncio são essenciais.",
+   when:"Tarde", gmaps:"https://maps.google.com/?q=Gion+District+Kyoto", url:""},
+  {id:"p9", name:"Kennin-ji Temple", bairro:"gion", cat:"activity", catLabel:"Atividade", source:"Fernanda", score:4.3, shortlist:false,
+   note:"O templo mais antigo de Kyoto, com jardim zen e pinturas de dragões no teto. Menos turístico que o Kiyomizudera.",
+   when:"Manhã ou tarde", gmaps:"https://maps.google.com/?q=Kennin-ji+Kyoto", url:"https://www.kenninji.jp/en/"},
+  {id:"p10", name:"Café 100% Arabica Higashiyama", bairro:"gion", cat:"cafe", catLabel:"Café", source:"Fernanda", score:3.8, shortlist:false,
+   note:"Fica no caminho de Sanneizaka. Bonito, bom para uma pausa — mas café apenas, sem grande destaque em comida.",
+   when:"Qualquer hora", gmaps:"https://maps.google.com/?q=Arabica+Kyoto+Higashiyama", url:"https://arabica.coffee/"},
+  {id:"p11", name:"Hamburg Labo", bairro:"gion", cat:"restaurant", catLabel:"Restaurante", source:"Pika", score:3.5, shortlist:false,
+   note:"Pika viu no Instagram mas não foi. Hambúrguer de estilo japonês — pode ser uma boa opção para almoço casual na área.",
+   when:"Almoço", gmaps:"https://maps.google.com/?q=Hamburg+Labo+Kyoto", url:""},
+
+  // ARASHIYAMA
+  {id:"p12", name:"Bamboo Forest", bairro:"arashiyama", cat:"activity", catLabel:"Atividade", source:"Fernanda", score:4.6, shortlist:true,
+   note:"Fernanda foi — mais bonito do que parece em foto, mas vale ir cedo (antes das 8h) para evitar multidões. Junto com o Tenryu-ji cria uma manhã perfeita.",
+   when:"Manhã cedo", gmaps:"https://maps.google.com/?q=Bamboo+Forest+Arashiyama", url:""},
+  {id:"p13", name:"Tenryu-ji Temple", bairro:"arashiyama", cat:"activity", catLabel:"Atividade", source:"Fernanda", score:4.8, shortlist:true,
+   note:"Fernanda disse que foi o momento mais bonito de Kyoto — névoa de cerejeiras com montanhas atrás. Jardim excepcional. Patrimônio UNESCO.",
+   when:"Manhã", gmaps:"https://maps.google.com/?q=Tenryu-ji+Arashiyama", url:"https://www.tenryuji.com/en/"},
+  {id:"p14", name:"Ponte Togetsukyo · Bairro Arashiyama", bairro:"arashiyama", cat:"activity", catLabel:"Atividade", source:"Fernanda", score:4.5, shortlist:false,
+   note:"Fernanda passeou pelo bairro e adorou — mais gostoso do que esperava. A ponte com as montanhas de fundo é muito bonita.",
+   when:"Tarde", gmaps:"https://maps.google.com/?q=Togetsukyo+Bridge+Arashiyama", url:""},
+  {id:"p15", name:"Ryoan-ji Temple", bairro:"arashiyama", cat:"activity", catLabel:"Atividade", source:"Fernanda", score:4.4, shortlist:false,
+   note:"O jardim de rochas mais famoso do Japão. Zen na forma mais pura — 15 pedras, areia branca e silêncio. Fernanda foi.",
+   when:"Manhã", gmaps:"https://maps.google.com/?q=Ryoan-ji+Kyoto", url:"https://www.ryoanji.jp/smph/eng/"},
+
+  // PONTO-CHO
+  {id:"p16", name:"Beatlemomo", bairro:"pontoche", cat:"bar", catLabel:"Bar", source:"Fernanda", score:4.8, shortlist:true,
+   note:"Speakeasy de vinil em Ponto-Cho. Fernanda recomendou fortemente — reservar via DM no Instagram @beatlemomo_kyoto com antecedência. Muito pequeno.",
+   when:"Noite", gmaps:"https://maps.google.com/?q=Beatlemomo+Kyoto", url:"https://www.instagram.com/beatlemomo_kyoto/"},
+  {id:"p17", name:"Frontier Bar", bairro:"pontoche", cat:"bar", catLabel:"Bar", source:"Fernanda", score:4.4, shortlist:true,
+   note:"Fernanda adorou principalmente pelo serviço — bem pequeno e local, perto de Ponto-Cho. Um dos destaques da viagem dela em bares.",
+   when:"Noite", gmaps:"https://maps.google.com/?q=Frontier+Bar+Kyoto", url:""},
+  {id:"p18", name:"Ponto-Cho (bairro)", bairro:"pontoche", cat:"activity", catLabel:"Atividade", source:"Fernanda", score:4.5, shortlist:false,
+   note:"A ruela em si. Fernanda recomenda passear sem pressa — entrar no que parecer interessante, bares e izakayas. Melhor horário: após 19h.",
+   when:"Noite", gmaps:"https://maps.google.com/?q=Pontocho+Kyoto", url:""},
+
+  // FUSHIMI · NARA
+  {id:"p19", name:"Fushimi Inari", bairro:"fushimi", cat:"activity", catLabel:"Atividade", source:"Fernanda", score:4.8, shortlist:true,
+   note:"Os mil portões vermelhos. Fernanda foi — caminhada pelo monte, sensação de estar dentro de um sonho. Ir cedo para evitar multidões.",
+   when:"Manhã cedo", gmaps:"https://maps.google.com/?q=Fushimi+Inari+Kyoto", url:"https://inari.jp/en/"},
+  {id:"p20", name:"Nara Park", bairro:"fushimi", cat:"activity", catLabel:"Atividade", source:"Fernanda", score:4.6, shortlist:true,
+   note:"Cervos livres que se curvam para pedir biscoito. Fernanda foi e adorou — experiência única. Combina bem com Fushimi num mesmo dia.",
+   when:"Tarde", gmaps:"https://maps.google.com/?q=Nara+Park", url:""},
+  {id:"p21", name:"Todaiji Temple", bairro:"fushimi", cat:"activity", catLabel:"Atividade", source:"Fernanda", score:4.5, shortlist:false,
+   note:"Maior buda de bronze do mundo dentro da maior estrutura de madeira do mundo. Fernanda foi. Em Nara, junto com o parque.",
+   when:"Tarde", gmaps:"https://maps.google.com/?q=Todaiji+Temple+Nara", url:"https://www.todaiji.or.jp/english/"},
+  {id:"p22", name:"Wagyukatsu", bairro:"fushimi", cat:"restaurant", catLabel:"Restaurante", source:"Fernanda", score:4.3, shortlist:false,
+   note:"Tipo tonkatsu mas feito com wagyu — Fernanda achou bem gostoso. Ficou no roteiro de Nara/Fushimi como almoço do dia.",
+   when:"Almoço", gmaps:"https://maps.google.com/?q=Wagyukatsu+Kyoto", url:""},
+
+  // SHIMOGAMO · OKAZAKI
+  {id:"p23", name:"BAL Department Store", bairro:"shimogamo", cat:"shopping", catLabel:"Shopping", source:"Fernanda", score:4.5, shortlist:true,
+   note:"Fernanda disse que é lindíssima. Livraria e seção de papelaria no subsolo são especiais. Boa para compras de casa e papelaria japonesa.",
+   when:"Tarde", gmaps:"https://maps.google.com/?q=BAL+Kyoto", url:""},
+  {id:"p24", name:"Silver Pavilion (Ginkaku-ji)", bairro:"shimogamo", cat:"activity", catLabel:"Atividade", source:"Fernanda", score:4.3, shortlist:false,
+   note:"Menos dramático que o Golden Pavilion mas mais íntimo. Jardim de areia muito bonito. Começa o Philosopher's Path logo aqui.",
+   when:"Manhã", gmaps:"https://maps.google.com/?q=Ginkakuji+Kyoto", url:"https://www.shokoku-ji.jp/en/ginkakuji/"},
+  {id:"p25", name:"Philosophers Path", bairro:"shimogamo", cat:"activity", catLabel:"Atividade", source:"Fernanda", score:4.4, shortlist:false,
+   note:"Caminhada de 2km ao longo de um canal — linda em qualquer estação. Fernanda foi no fim de tarde e achou muito gostoso.",
+   when:"Tarde", gmaps:"https://maps.google.com/?q=Philosopher's+Path+Kyoto", url:""},
+  {id:"p26", name:"Ippodo Tea", bairro:"shimogamo", cat:"cafe", catLabel:"Café", source:"Fernanda", score:3.2, shortlist:false,
+   note:"Loja tradicional de chás, linda por fora — mas Fernanda não gostou de matcha nem de mochi (recheado de feijão). Só vale se você gostar de matcha.",
+   when:"Tarde", gmaps:"https://maps.google.com/?q=Ippodo+Tea+Kyoto", url:"https://www.ippodo-tea.co.jp/en/"},
+
+  // NIJO · CENTRO
+  {id:"p27", name:"Nijo Castle", bairro:"nijo", cat:"activity", catLabel:"Atividade", source:"Fernanda", score:4.6, shortlist:true,
+   note:"Fernanda disse que vale super a pena — o assoalho canta para alertar sobre invasores (nightingale floors). Muito bem preservado. Jardim lindo.",
+   when:"Manhã", gmaps:"https://maps.google.com/?q=Nijo+Castle+Kyoto", url:"https://nijo-jocastle.city.kyoto.lg.jp/en/"},
+  {id:"p28", name:"Sento Imperial Palace", bairro:"nijo", cat:"activity", catLabel:"Atividade", source:"Fernanda", score:3.8, shortlist:false,
+   note:"Fernanda passeou pelo parque apenas — achou lindo. O palácio em si requer reserva antecipada no governo japonês.",
+   when:"Manhã", gmaps:"https://maps.google.com/?q=Sento+Imperial+Palace+Kyoto", url:""},
+  {id:"p29", name:"Golden Pavilion (Kinkaku-ji)", bairro:"nijo", cat:"activity", catLabel:"Atividade", source:"Fernanda", score:4.5, shortlist:false,
+   note:"Um dos templos mais famosos do Japão — dourado sobre o lago. Fernanda foi. Muito turístico mas realmente impressionante.",
+   when:"Manhã cedo", gmaps:"https://maps.google.com/?q=Kinkakuji+Kyoto", url:"https://www.shokoku-ji.jp/en/kinkakuji/"},
+  {id:"p30", name:"Ujien (matcha · montblanc)", bairro:"nijo", cat:"cafe", catLabel:"Café", source:"Fernanda", score:3.8, shortlist:false,
+   note:"Desde 1869. Fernanda tomou sorvete de matcha com montblanc — achou muito bom. Fica em Shinsaibashisuji (Osaka) — erro de bairro corrigido abaixo.",
+   when:"Tarde", gmaps:"https://maps.google.com/?q=Ujien+matcha+Kyoto", url:""},
+];
+
+// =====================
+// STATE
+// =====================
+let currentBairro = "all";
+let markers = [];
+let userMarker = null;
+let userLat = null;
+let userLng = null;
+let bairroLayers = {};
+
+// =====================
+// MAP INIT
+// =====================
+const map = L.map("map", { zoomControl: true }).setView([35.0116, 135.7681], 13);
+
+L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+  attribution: '© OpenStreetMap contributors © CARTO',
+  subdomains: 'abcd',
+  maxZoom: 19
+}).addTo(map);
+
+// Category icons
+function getCatIcon(cat, shortlist) {
+  const icons = {
+    restaurant: "🍽",
+    bar: "🍸",
+    cafe: "☕",
+    activity: "⛩",
+    shopping: "🛍"
+  };
+  const emoji = icons[cat] || "📍";
+  const bg = shortlist ? "#c9a96e" : "#7a736a";
+  return L.divIcon({
+    html: '<div style="background:' + bg + ';color:white;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:12px;box-shadow:0 2px 6px rgba(0,0,0,0.2);border:2px solid white;">' + emoji + '</div>',
+    className: '',
+    iconSize: [28, 28],
+    iconAnchor: [14, 14]
+  });
+}
+
+// Draw bairro perimeters
+function drawPerimeters() {
+  const perims = {
+    gion: [[35.0093,135.7713],[35.0093,135.7878],[34.9940,135.7878],[34.9940,135.7713]],
+    arashiyama: [[35.0200,135.6600],[35.0200,135.6870],[34.9970,135.6870],[34.9970,135.6600]],
+    pontoche: [[35.0100,135.7660],[35.0100,135.7760],[34.9990,135.7760],[34.9990,135.7660]],
+    fushimi: [[35.0000,135.7600],[35.0000,135.7900],[34.9400,135.7900],[34.9400,135.7600]],
+    shimogamo: [[35.0400,135.7750],[35.0400,135.8000],[35.0150,135.8000],[35.0150,135.7750]],
+    nijo: [[35.0250,135.7380],[35.0250,135.7620],[35.0000,135.7620],[35.0000,135.7380]],
+  };
+  const colors = {gion:"#c0392b",arashiyama:"#27ae60",pontoche:"#8e44ad",fushimi:"#e67e22",shimogamo:"#16a085",nijo:"#2980b9"};
+  Object.keys(perims).forEach(k => {
+    if (bairroLayers[k]) map.removeLayer(bairroLayers[k]);
+    bairroLayers[k] = L.polygon(perims[k], {color: colors[k], fillColor: colors[k], fillOpacity: 0.08, weight: 2, opacity: 0.5}).addTo(map);
+    bairroLayers[k].bindTooltip(BAIRROS[k].label, {permanent:false, className:'', direction:'center'});
+  });
+}
+
+function removePerimeters() {
+  Object.values(bairroLayers).forEach(l => map.removeLayer(l));
+  bairroLayers = {};
+}
+
+// =====================
+// RENDER
+// =====================
+function getFiltered() {
+  const cat = document.getElementById("catFilter").value;
+  const src = document.getElementById("sourceFilter").value;
+  return PLACES.filter(p => {
+    const bairroOk = currentBairro === "all" || p.bairro === currentBairro;
+    const catOk = !cat || p.cat === cat;
+    const srcOk = !src || p.source.includes(src);
+    return bairroOk && catOk && srcOk;
+  });
+}
+
+function renderMap() {
+  markers.forEach(m => map.removeLayer(m.marker));
+  markers = [];
+  const filtered = getFiltered();
+  filtered.forEach(p => {
+    const coords = PLACE_COORDS[p.id];
+    if (!coords) return;
+    const marker = L.marker(coords, {icon: getCatIcon(p.cat, p.shortlist)}).addTo(map);
+    marker.bindPopup(buildPopup(p));
+    marker.on("click", () => {
+      document.getElementById("searchBox").value = "";
+      document.getElementById("searchResults").classList.remove("visible");
+      highlightCard(p.id);
+    });
+    markers.push({marker, id: p.id});
+  });
+}
+
+function buildPopup(p) {
+  let links = '<a class="popup-link" href="' + p.gmaps + '" target="_blank">Google Maps →</a>';
+  if (p.url) links += ' <a class="popup-link" href="' + p.url + '" target="_blank">Site oficial →</a>';
+  if (userLat) {
+    const nav = "https://www.google.com/maps/dir/" + userLat + "," + userLng + "/" + encodeURIComponent(p.name + " Kyoto");
+    links += ' <a class="popup-link" href="' + nav + '" target="_blank">🧭 Como chegar</a>';
+  } else {
+    const nav = "https://www.google.com/maps/dir/Current+Location/" + encodeURIComponent(p.name + " Kyoto");
+    links += ' <a class="popup-link" href="' + nav + '" target="_blank">🧭 Como chegar</a>';
+  }
+  return '<div class="popup-name">' + (p.shortlist ? "✦ " : "") + p.name + '</div>' +
+    '<div class="popup-meta">' + p.catLabel + ' · ' + p.source + (p.when ? ' · ' + p.when : '') + '</div>' +
+    '<div class="popup-links">' + links + '</div>';
+}
+
+function renderList() {
+  const list = document.getElementById("placesList");
+  const filtered = getFiltered();
+  document.getElementById("resultCount").textContent = filtered.length + " lugares";
+
+  if (currentBairro !== "all" && BAIRROS[currentBairro]) {
+    const b = BAIRROS[currentBairro];
+    list.innerHTML =
+      '<div class="bairro-header">' + b.emoji + ' ' + b.label + '</div>' +
+      '<div class="bairro-desc">' + b.desc + '</div>' +
+      filtered.map(p => buildCard(p)).join("");
+  } else {
+    list.innerHTML = filtered.map(p => buildCard(p)).join("");
+  }
+}
+
+function buildCard(p) {
+  const star = p.shortlist ? '<span class="shortlist-star">✦</span>' : "";
+  const catClass = "cat-" + p.cat;
+  let links = '<a class="card-link" href="' + p.gmaps + '" target="_blank">Google Maps →</a>';
+  if (p.url) links += ' <a class="card-link" href="' + p.url + '" target="_blank">Site oficial →</a>';
+  const nav = userLat
+    ? "https://www.google.com/maps/dir/" + userLat + "," + userLng + "/" + encodeURIComponent(p.name + " Kyoto")
+    : "https://www.google.com/maps/dir/Current+Location/" + encodeURIComponent(p.name + " Kyoto");
+  links += ' <a class="card-link" href="' + nav + '" target="_blank">🧭 Como chegar</a>';
+
+  return '<div class="place-card" id="card-' + p.id + '" onclick="focusPlace(\'' + p.id + '\')">' +
+    '<div class="card-top">' +
+    '<div class="card-name">' + star + p.name + '</div>' +
+    '<div class="card-score">' + p.score + '★</div>' +
+    '</div>' +
+    '<div class="card-meta">' +
+    '<span class="tag ' + catClass + '">' + p.catLabel + '</span>' +
+    '<span class="source-tag">👤 ' + p.source + '</span>' +
+    (p.when ? '<span class="tag">' + p.when + '</span>' : '') +
+    '</div>' +
+    '<div class="card-expand" onclick="event.stopPropagation();toggleCard(\'' + p.id + '\',this)">ver mais ↓</div>' +
+    '<div class="card-details" id="details-' + p.id + '">' +
+    '<div class="card-note">' + p.note + '</div>' +
+    '<div class="card-links">' + links + '</div>' +
+    '</div>' +
+    '</div>';
+}
+
+function toggleCard(id, btn) {
+  const el = document.getElementById("details-" + id);
+  el.classList.toggle("open");
+  btn.textContent = el.classList.contains("open") ? "ver menos ↑" : "ver mais ↓";
+}
+
+function focusPlace(id) {
+  const coords = PLACE_COORDS[id];
+  if (!coords) return;
+  map.setView(coords, 17);
+  const m = markers.find(m => m.id === id);
+  if (m) m.marker.openPopup();
+  highlightCard(id);
+}
+
+function highlightCard(id) {
+  document.querySelectorAll(".place-card").forEach(c => c.style.background = "");
+  const card = document.getElementById("card-" + id);
+  if (card) { card.style.background = "var(--cream)"; card.scrollIntoView({behavior:"smooth",block:"nearest"}); }
+}
+
+// =====================
+// BAIRRO SWITCHING
+// =====================
+function switchBairro(key, chipEl) {
+  currentBairro = key;
+  removePerimeters();
+  document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+  if (chipEl) chipEl.classList.add("active");
+  const b = BAIRROS[key];
+  if (b) map.setView(b.center, b.zoom);
+  renderList();
+  renderMap();
+}
+
+function showOverview(chipEl) {
+  currentBairro = "all";
+  document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+  if (chipEl) chipEl.classList.add("active");
+  else document.querySelector(".chip.overview").classList.add("active");
+  map.setView([35.0116, 135.7681], 12);
+  drawPerimeters();
+  renderList();
+  renderMap();
+}
+
+function applyFilters() {
+  renderList();
+  renderMap();
+}
+
+// =====================
+// SEARCH
+// =====================
+function handleSearch(val) {
+  const results = document.getElementById("searchResults");
+  if (!val.trim()) {
+    results.classList.remove("visible");
+    return;
+  }
+  const q = val.toLowerCase();
+  const found = PLACES.filter(p =>
+    p.name.toLowerCase().includes(q) ||
+    p.source.toLowerCase().includes(q) ||
+    p.note.toLowerCase().includes(q) ||
+    p.catLabel.toLowerCase().includes(q)
+  ).sort((a, b) => {
+    const an = a.name.toLowerCase().startsWith(q) ? 0 : 1;
+    const bn = b.name.toLowerCase().startsWith(q) ? 0 : 1;
+    if (an !== bn) return an - bn;
+    return b.score - a.score;
+  });
+
+  results.innerHTML = found.map(p =>
+    '<div class="search-result-item" onclick="goToSearchResult(\'' + p.id + '\')">' +
+    '<div class="result-name">' + (p.shortlist ? "✦ " : "") + p.name + '</div>' +
+    '<div class="result-meta"><span>' + p.catLabel + '</span><span>👤 ' + p.source + '</span><span>' + BAIRROS[p.bairro]?.label + '</span><span>' + p.score + '★</span></div>' +
+    '</div>'
+  ).join("") || '<div style="padding:16px;font-size:12px;color:var(--text-light);">Nenhum lugar encontrado.</div>';
+
+  results.classList.add("visible");
+}
+
+function goToSearchResult(id) {
+  document.getElementById("searchBox").value = "";
+  document.getElementById("searchResults").classList.remove("visible");
+  const p = PLACES.find(x => x.id === id);
+  if (!p) return;
+  switchBairro(p.bairro, null);
+  setTimeout(() => focusPlace(id), 200);
+}
+
+// =====================
+// SIDEBAR TOGGLE
+// =====================
+function toggleSidebar() {
+  const sidebar = document.getElementById("sidebar");
+  const toggle = document.getElementById("sidebarToggle");
+  sidebar.classList.toggle("collapsed");
+  toggle.textContent = sidebar.classList.contains("collapsed") ? "›" : "‹";
+  toggle.classList.toggle("collapsed", sidebar.classList.contains("collapsed"));
+  setTimeout(() => map.invalidateSize(), 320);
+}
+
+function toggleMobileSidebar() {
+  document.getElementById("sidebar").classList.toggle("collapsed");
+}
+
+// =====================
+// LOCATE ME
+// =====================
+function locateMe() {
+  if (!navigator.geolocation) return;
+  navigator.geolocation.getCurrentPosition(pos => {
+    userLat = pos.coords.latitude;
+    userLng = pos.coords.longitude;
+    if (userMarker) map.removeLayer(userMarker);
+    userMarker = L.circleMarker([userLat, userLng], {
+      radius: 8, fillColor: "#2980b9", color: "white", weight: 2, fillOpacity: 1
+    }).addTo(map).bindPopup("Você está aqui").openPopup();
+    map.setView([userLat, userLng], 15);
+  });
+}
+
+// =====================
+// COORDINATES
+// =====================
+const PLACE_COORDS = {
+  p1: [35.0020, 135.7765],
+  p2: [35.0025, 135.7800],
+  p3: [35.0015, 135.7770],
+  p4: [35.0040, 135.7720],
+  p5: [35.0010, 135.7800],
+  p6: [35.0035, 135.7778],
+  p7: [34.9948, 135.7850],
+  p8: [35.0034, 135.7788],
+  p9: [35.0054, 135.7729],
+  p10: [35.0008, 135.7802],
+  p11: [35.0020, 135.7790],
+  p12: [35.0172, 135.6727],
+  p13: [35.0167, 135.6750],
+  p14: [35.0094, 135.6729],
+  p15: [35.0243, 135.7182],
+  p16: [35.0063, 135.7718],
+  p17: [35.0070, 135.7710],
+  p18: [35.0063, 135.7708],
+  p19: [34.9671, 135.7727],
+  p20: [34.6851, 135.8430],
+  p21: [34.6888, 135.8398],
+  p22: [35.0050, 135.7700],
+  p23: [35.0090, 135.7716],
+  p24: [35.0268, 135.7984],
+  p25: [35.0230, 135.7940],
+  p26: [35.0120, 135.7624],
+  p27: [35.0142, 135.7487],
+  p28: [35.0230, 135.7534],
+  p29: [35.0394, 135.7292],
+  p30: [35.0050, 135.7620],
+};
+
+// =====================
+// INIT
+// =====================
+showOverview(null);
+</script>
+</body>
+</html>
